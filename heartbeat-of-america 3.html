@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Unscripted6160 · Heartbeat of America Tour</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#3b393a;color:#e8e0d0;font-family:Georgia,'Times New Roman',serif;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#3b393a}::-webkit-scrollbar-thumb{background:#555052;border-radius:3px}
+input,select,textarea,button{font-family:inherit}
+button:hover{opacity:.85}
+#header{background:linear-gradient(180deg,#2e2c2d 0%,#3b393a 100%);border-bottom:1px solid #484344;padding:22px 24px 0;position:sticky;top:0;z-index:20}
+#title-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:2px}
+h1{font-size:clamp(20px,3.5vw,30px);font-weight:normal;color:#f0e8d8;line-height:1.1}
+h1 span{color:#e63946}
+h2{font-size:11px;font-weight:normal;color:#a08878;letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+#stats{display:flex;gap:12px;font-family:'Courier New',monospace;font-size:11px;color:#a89898;flex-wrap:wrap;align-items:flex-end}
+#ekg-svg{width:100%;height:46px;display:block}
+.tabs{display:flex;gap:0;border-bottom:1px solid #484344;margin-top:6px}
+.tab{background:transparent;border:none;border-bottom:2px solid transparent;color:#b0a8a8;padding:8px 18px;font-family:'Courier New',monospace;font-size:11px;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:color .15s}
+.tab:hover{color:#e8e0d0}
+.tab.active{color:#e63946;border-bottom-color:#e63946}
+.tab.active-routes{color:#2a9d8f;border-bottom-color:#2a9d8f}
+#toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 10px;align-items:center;border-top:1px solid #3b393a}
+.tb{background:transparent;border:1px solid #555052;border-radius:3px;padding:4px 11px;font-size:10px;font-family:'Courier New',monospace;cursor:pointer;letter-spacing:.5px}
+.tb-teal{color:#2a9d8f;border-color:#2a9d8f}
+.tb-orange{color:#f4a261}
+.tb-orange:hover{border-color:#f4a261}
+.tb-red{color:#ff7070}
+.tb-red:hover{border-color:#ff7070}
+#save-msg{font-family:'Courier New',monospace;font-size:10px;color:#2a9d8f}
+#auto-info{margin-left:auto;font-family:'Courier New',monospace;font-size:9px;color:#a89898}
+#filter-bar{display:flex;gap:6px;flex-wrap:wrap;padding:8px 24px 10px;background:#363334;border-bottom:1px solid #484344}
+.f-search{background:#3b393a;border:1px solid #666063;border-radius:3px;color:#e8e0d0;padding:5px 10px;font-size:12px;font-family:'Courier New',monospace;outline:none;flex:1;min-width:130px}
+.f-search::placeholder{color:#a89898}
+.f-search:focus{border-color:#e63946}
+.flt{background:transparent;border:1px solid #555052;border-radius:3px;color:#c8bfbf;padding:4px 10px;font-size:10px;font-family:'Courier New',monospace;cursor:pointer;letter-spacing:.5px}
+.flt.act-all{color:#e63946;border-color:#e63946;background:#e6394612}
+.flt.act-trail{color:#e63946;border-color:#e63946;background:#e6394612}
+.flt.act-connection{color:#f4a261;border-color:#f4a261;background:#f4a26112}
+.flt.act-poi{color:#2a9d8f;border-color:#2a9d8f;background:#2a9d8f12}
+.flt-sel{background:#3b393a;border:1px solid #555052;border-radius:3px;color:#c8bfbf;padding:4px 8px;font-size:10px;font-family:'Courier New',monospace;outline:none;cursor:pointer}
+.flt-sel:focus{border-color:#e63946}
+#add-panel{display:none;background:#0d2a24;border-bottom:1px solid #2a9d8f;padding:16px 24px}
+#add-panel.open{display:block}
+#add-panel-title{font-size:9px;letter-spacing:3px;color:#2a9d8f;font-family:'Courier New',monospace;margin-bottom:10px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:10px}
+.form-grid .full{grid-column:1/-1}
+.form-lbl{font-size:9px;color:#406050;font-family:'Courier New',monospace;margin-bottom:3px;letter-spacing:1px}
+.form-ctrl{background:#142a22;border:1px solid #2a6050;border-radius:3px;color:#e8e0d0;padding:5px 9px;font-size:11px;font-family:'Courier New',monospace;outline:none;width:100%}
+.form-ctrl:focus{border-color:#2a9d8f}
+textarea.form-ctrl{resize:vertical;line-height:1.5}
+.btn-add{background:#0d2a24;border:1px solid #2a9d8f;border-radius:3px;color:#2a9d8f;padding:6px 18px;font-size:11px;font-family:'Courier New',monospace;cursor:pointer}
+.btn-cancel{background:transparent;border:1px solid #484344;border-radius:3px;color:#a89898;padding:6px 14px;font-size:11px;font-family:'Courier New',monospace;cursor:pointer}
+#content{padding:10px 24px 60px}
+.no-results{text-align:center;color:#806868;font-family:'Courier New',monospace;font-size:12px;padding:60px}
+.entry{margin-bottom:2px}
+.erow{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:0 3px 3px 0;cursor:pointer;transition:background .1s}
+.erow:hover{filter:brightness(1.1)}
+.eseq{font-size:9px;font-family:'Courier New',monospace;color:#b0a8a8;min-width:20px;flex-shrink:0}
+.eicon{font-size:12px;flex-shrink:0}
+.estate{font-size:8px;letter-spacing:1px;padding:1px 5px;border-radius:2px;flex-shrink:0;font-family:'Courier New',monospace;min-width:26px;text-align:center}
+.ename{flex:1;font-size:13px;color:#f0e8d8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eregion{font-size:8px;color:#b0a8a8;font-family:'Courier New',monospace;flex-shrink:0;white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+.epri{font-size:8px;font-family:'Courier New',monospace;padding:1px 5px;border-radius:2px;flex-shrink:0}
+.pri-a{background:#e6394618;color:#ff7070;border:1px solid #e6394640}
+.pri-b{background:#f4a26118;color:#f4a261;border:1px solid #f4a26140}
+.pri-c{background:#44cc7718;color:#44cc77;border:1px solid #44cc7740}
+.emiles{font-size:11px;font-family:'Courier New',monospace;flex-shrink:0}
+.emiles span{font-size:8px;color:#b0a8a8}
+.ekg-sym{font-size:10px;flex-shrink:0;font-family:'Courier New',monospace}
+.ekg-up2{color:#ff4444}.ekg-up1{color:#ff8844}.ekg-flat{color:#44cc77}.ekg-down1{color:#44aaff}.ekg-down2{color:#4466ff}
+.user-badge{font-size:7px;color:#2a9d8f;border:1px solid #2a9d8f;border-radius:2px;padding:1px 3px;font-family:'Courier New',monospace;flex-shrink:0}
+.edetail{padding:10px 16px 14px 46px;border-radius:0 0 4px 0}
+.detail-meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:10px;font-family:'Courier New',monospace;font-size:10px}
+.dk{color:#706060}.dv{color:#c8b0a0}
+.detail-notes{font-size:12px;color:#a09080;line-height:1.7;margin:0 0 10px}
+.scores-section{margin-bottom:10px}
+.score-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.score-lbl{font-size:8px;color:#806868;font-family:'Courier New',monospace;width:72px;letter-spacing:.5px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:1px}
+.dot.on{}
+.dot.off{opacity:.18}
+.mustdo-title{font-size:8px;letter-spacing:2px;color:#2a9d8f;font-family:'Courier New',monospace;margin-bottom:5px}
+.mustdo-item{display:flex;gap:7px;margin-bottom:2px}
+.mustdo-dot{color:#2a9d8f;font-size:10px}
+.mustdo-text{font-size:11px;color:#c8b8a0}
+.tags-section{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{font-size:8px;color:#907888;font-family:'Courier New',monospace;border:1px solid #554555;border-radius:2px;padding:1px 6px}
+.dactions{display:flex;gap:7px;margin-top:8px}
+.btn-ins{background:transparent;border:1px solid #2a4a40;border-radius:2px;color:#2a9d8f;font-size:9px;font-family:'Courier New',monospace;padding:3px 9px;cursor:pointer}
+.btn-rem{background:transparent;border:1px solid #5a4040;border-radius:2px;color:#ff7070;font-size:9px;font-family:'Courier New',monospace;padding:3px 9px;cursor:pointer}
+.routes-grid{display:flex;flex-direction:column;gap:6px}
+.rcard{border-radius:4px;overflow:hidden;cursor:pointer;background:#363334}
+.rchead{display:flex;align-items:center;gap:12px;padding:13px 16px;transition:background .12s}
+.rchead:hover{background:#3f3c3d}
+.rchead.open{background:#3a3336}
+.rcicon{font-size:16px;flex-shrink:0}
+.rcinfo{flex:1;min-width:0}
+.rcname{font-size:14px;color:#f0e8d8}
+.rcdesc{font-size:10px;color:#a09080;margin-top:2px;line-height:1.4}
+.rcstats{text-align:right;font-family:'Courier New',monospace;font-size:10px;color:#b0a8a8;flex-shrink:0;white-space:nowrap}
+.rcseq{padding:8px 16px 14px 44px;background:#312e2f}
+.rcseq-item{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #3f3a3b}
+.rcseq-item:last-child{border-bottom:none}
+.rcseq-icon{font-size:11px;flex-shrink:0}
+.rcseq-state{font-size:8px;font-family:'Courier New',monospace;min-width:22px;flex-shrink:0}
+.rcseq-name{flex:1;font-size:11px;color:#c8b8a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcseq-miles{font-size:10px;font-family:'Courier New',monospace;color:#907060;flex-shrink:0}
+.rcseq-missing{font-size:10px;color:#606060;font-family:'Courier New',monospace;padding:4px 0}
+#route-panel{display:none;background:#0d2a24;border-bottom:1px solid #2a9d8f;padding:16px 24px}
+#route-panel.open{display:block}
+#route-panel-title{font-size:9px;letter-spacing:3px;color:#2a9d8f;font-family:'Courier New',monospace;margin-bottom:10px}
+.rcseq-actions{display:flex;gap:8px;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid #3f3a3b}
+.rc-edit-btn{background:transparent;border:1px solid #2a4a40;border-radius:2px;color:#2a9d8f;font-size:9px;font-family:'Courier New',monospace;padding:3px 10px;cursor:pointer}
+.rc-del-btn{background:transparent;border:1px solid #5a4040;border-radius:2px;color:#ff7070;font-size:9px;font-family:'Courier New',monospace;padding:3px 10px;cursor:pointer}
+.rcbtns{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
+.rcbtn{background:transparent;border:1px solid #555052;border-radius:2px;color:#c8bfbf;font-size:9px;font-family:'Courier New',monospace;padding:1px 7px;cursor:pointer;line-height:1.5}
+.rcbtn:hover{border-color:#e63946;color:#e63946}
+.rcbtn:disabled{opacity:.2;cursor:default}
+.rcbtn:disabled:hover{border-color:#555052;color:#c8bfbf}
+.rcadd-row{display:flex;gap:6px;padding-top:12px;margin-top:8px;border-top:1px solid #3f3a3b}
+.rcadd-sel{flex:1;background:#3b393a;border:1px solid #555052;border-radius:3px;color:#e8e0d0;padding:5px 8px;font-size:11px;font-family:'Courier New',monospace;outline:none}
+.rcadd-sel:focus{border-color:#2a9d8f}
+.rcadd-btn{background:#0d2a24;border:1px solid #2a9d8f;border-radius:3px;color:#2a9d8f;padding:5px 14px;font-size:10px;font-family:'Courier New',monospace;cursor:pointer;flex-shrink:0}
+#footer{border-top:1px solid #484344;padding:14px 24px;font-family:'Courier New',monospace;font-size:9px;color:#a89898;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+</style>
+</head>
+<body>
+<div id="header">
+  <div id="title-row">
+    <div>
+      <div style="font-size:9px;letter-spacing:4px;color:#e63946;font-family:'Courier New',monospace;margin-bottom:3px">WEST &#x2192; EAST &nbsp;·&nbsp; TOUR DESIGN DATABASE</div>
+      <h1>Unscripted<span>6160</span></h1>
+      <h2>Heartbeat of America Tour</h2>
+    </div>
+    <div id="stats">
+      <span><b id="st-t" style="color:#e63946">0</b> trails</span>
+      <span><b id="st-c" style="color:#f4a261">0</b> links</span>
+      <span><b id="st-p" style="color:#2a9d8f">0</b> POIs</span>
+      <span><b id="st-m" style="color:#e8e0d0">0</b> mi</span>
+      <span><b id="st-n" style="color:#c8bfbf">0</b> entries</span>
+    </div>
+  </div>
+  <svg id="ekg-svg" viewBox="0 0 1000 70" xmlns="http://www.w3.org/2000/svg">
+    <polyline points="0,35 70,35 90,8 110,62 130,15 160,55 195,35 255,35 280,8 310,58 340,18 380,35 420,35 455,10 490,60 520,22 560,35 600,35 635,5 680,68 715,18 755,35 800,35 835,12 870,52 905,30 1000,35"
+      fill="none" stroke="rgba(230,57,70,0.15)" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+    <polyline points="0,35 70,35 90,8 110,62 130,15 160,55 195,35 255,35 280,8 310,58 340,18 380,35 420,35 455,10 490,60 520,22 560,35 600,35 635,5 680,68 715,18 755,35 800,35 835,12 870,52 905,30 1000,35"
+      fill="none" stroke="#e63946" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>
+  <div class="tabs">
+    <button class="tab active" id="tab-lib" onclick="setTab('library')">&#9776; Library</button>
+    <button class="tab" id="tab-rts" onclick="setTab('routes')">&#9654; Routes</button>
+  </div>
+  <div id="toolbar">
+    <button class="tb tb-teal" id="btn-add-entry" onclick="toggleAdd()">+ Add Entry</button>
+    <button class="tb tb-teal" id="btn-new-route" onclick="openNewRoute()" style="display:none">+ New Route</button>
+    <button class="tb tb-orange" onclick="exportJSON()">&#8595; Export JSON</button>
+    <label class="tb tb-orange" style="cursor:pointer">&#8593; Import JSON<input type="file" accept=".json" onchange="importJSON(event)" style="display:none"/></label>
+    <button class="tb tb-red" onclick="resetData()">&#8635; Reset</button>
+    <span id="save-msg"></span>
+    <span id="auto-info">Auto-saved &middot; <span id="st-n2">0</span> entries</span>
+  </div>
+</div>
+<div id="filter-bar">
+  <input id="f-search" class="f-search" type="text" placeholder="Search trails, states, themes&#8230;" oninput="setSearch(this.value)"/>
+  <button class="flt act-all" data-f="all" onclick="setFType('all')">All</button>
+  <button class="flt" data-f="trail" onclick="setFType('trail')">Trails</button>
+  <button class="flt" data-f="connection" onclick="setFType('connection')">Links</button>
+  <button class="flt" data-f="poi" onclick="setFType('poi')">Must See</button>
+  <select class="flt-sel" id="f-region" onchange="setFRegion(this.value)">
+    <option value="">All Regions</option>
+    <option value="pacific-nw">Pacific NW</option>
+    <option value="northern-rockies">Northern Rockies</option>
+    <option value="great-plains">Great Plains</option>
+    <option value="midwest">Midwest</option>
+    <option value="ohio-valley">Ohio Valley</option>
+    <option value="appalachia">Appalachia</option>
+    <option value="mid-atlantic">Mid-Atlantic</option>
+    <option value="new-york">New York</option>
+    <option value="new-england">New England</option>
+    <option value="great-lakes">Great Lakes</option>
+  </select>
+  <select class="flt-sel" id="f-priority" onchange="setFPriority(this.value)">
+    <option value="">All Priority</option>
+    <option value="A">Priority A</option>
+    <option value="B">Priority B</option>
+    <option value="C">Priority C</option>
+  </select>
+  <select class="flt-sel" id="f-theme" onchange="setFTheme(this.value)">
+    <option value="">All Themes</option>
+    <option value="railroad">Railroad</option>
+    <option value="waterway">Waterway / Canal</option>
+    <option value="national-park">National Park</option>
+    <option value="civil-war">Civil War</option>
+    <option value="revolutionary-war">Revolutionary War</option>
+    <option value="westward-expansion">Westward Expansion</option>
+    <option value="native-american-history">Native American History</option>
+    <option value="industrial">Industrial Heritage</option>
+    <option value="coastal">Coastal</option>
+    <option value="mountains">Mountains</option>
+    <option value="river-corridor">River Corridor</option>
+    <option value="small-town-america">Small Town America</option>
+    <option value="colonial-history">Colonial History</option>
+    <option value="scenic-byway">Scenic Byway</option>
+  </select>
+</div>
+<div id="add-panel">
+  <div id="add-panel-title">ADD ENTRY <span id="add-after-label"></span></div>
+  <div class="form-grid">
+    <div>
+      <div class="form-lbl">TYPE *</div>
+      <select id="a-type" class="form-ctrl" onchange="toggleAddFields()">
+        <option value="trail">Trail</option>
+        <option value="connection">Connection</option>
+        <option value="poi">Must See / POI</option>
+      </select>
+    </div>
+    <div style="grid-column:span 2">
+      <div class="form-lbl">NAME *</div>
+      <input id="a-name" class="form-ctrl" placeholder="Name"/>
+    </div>
+    <div>
+      <div class="form-lbl">STATE(S)</div>
+      <input id="a-state" class="form-ctrl" placeholder="e.g. PA / MD"/>
+    </div>
+    <div>
+      <div class="form-lbl">REGION</div>
+      <select id="a-region" class="form-ctrl">
+        <option value="pacific-nw">Pacific NW</option>
+        <option value="northern-rockies">Northern Rockies</option>
+        <option value="great-plains">Great Plains</option>
+        <option value="midwest">Midwest</option>
+        <option value="ohio-valley">Ohio Valley</option>
+        <option value="appalachia">Appalachia</option>
+        <option value="mid-atlantic">Mid-Atlantic</option>
+        <option value="new-york">New York</option>
+        <option value="new-england">New England</option>
+        <option value="great-lakes">Great Lakes</option>
+      </select>
+    </div>
+    <div id="a-miles-wrap">
+      <div class="form-lbl">MILES</div>
+      <input id="a-miles" type="number" class="form-ctrl" placeholder="0"/>
+    </div>
+    <div id="a-surface-wrap">
+      <div class="form-lbl">SURFACE</div>
+      <input id="a-surface" class="form-ctrl" placeholder="e.g. Paved"/>
+    </div>
+    <div id="a-ekg-wrap">
+      <div class="form-lbl">EKG ROLE</div>
+      <select id="a-ekg" class="form-ctrl">
+        <option value="up2">&#8593;&#8593; Major spike (N)</option>
+        <option value="up1">&#8593; Moderate spike</option>
+        <option value="flat" selected>&#8212; Baseline</option>
+        <option value="down1">&#8595; Moderate dip</option>
+        <option value="down2">&#8595;&#8595; Major dip (S)</option>
+      </select>
+    </div>
+    <div id="a-priority-wrap">
+      <div class="form-lbl">PRIORITY</div>
+      <select id="a-priority" class="form-ctrl">
+        <option value="A">A — Must Consider</option>
+        <option value="B" selected>B — Worthwhile</option>
+        <option value="C">C — Optional</option>
+      </select>
+    </div>
+    <div id="a-category-wrap" style="display:none">
+      <div class="form-lbl">CATEGORY</div>
+      <input id="a-category" class="form-ctrl" placeholder="e.g. Historic Site"/>
+    </div>
+    <div class="full">
+      <div class="form-lbl">NOTES / DESCRIPTION</div>
+      <textarea id="a-notes" class="form-ctrl" rows="2" placeholder="Description, highlights, tips&#8230;"></textarea>
+    </div>
+    <div id="a-mustdo-wrap" class="full" style="display:none">
+      <div class="form-lbl">MUST-DO ITEMS (separate with semicolons)</div>
+      <input id="a-mustdo" class="form-ctrl" placeholder="Summit hike; Visitor center; Sunrise viewpoint"/>
+    </div>
+    <div class="full">
+      <div class="form-lbl">INSERT AFTER (optional)</div>
+      <select id="a-insert" class="form-ctrl">
+        <option value="">&#x2014; Append to end &#x2014;</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-add" onclick="submitAdd()">Add to Library</button>
+    <button class="btn-cancel" onclick="closeAdd()">Cancel</button>
+  </div>
+</div>
+<div id="route-panel">
+  <div id="route-panel-title">NEW ROUTE</div>
+  <div class="form-grid">
+    <div class="full">
+      <div class="form-lbl">ROUTE NAME *</div>
+      <input id="r-name" class="form-ctrl" placeholder="e.g. Lewis and Clark Edition"/>
+    </div>
+    <div class="full">
+      <div class="form-lbl">DESCRIPTION</div>
+      <textarea id="r-desc" class="form-ctrl" rows="2" placeholder="What makes this route version unique&#8230;"></textarea>
+    </div>
+    <div>
+      <div class="form-lbl">ICON (emoji or symbol)</div>
+      <input id="r-icon" class="form-ctrl" placeholder="e.g. &#9733;" maxlength="2"/>
+    </div>
+    <div>
+      <div class="form-lbl">COLOR</div>
+      <input id="r-color" class="form-ctrl" type="color" value="#e63946" style="height:30px;padding:2px;cursor:pointer"/>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-add" onclick="submitRoute()" id="route-submit-btn">Create Route</button>
+    <button class="btn-cancel" onclick="closeRoutePanel()">Cancel</button>
+  </div>
+</div>
+<div id="content"></div>
+<div id="footer">
+  <span>Sources: Rails-to-Trails Conservancy &middot; Adventure Cycling Association &middot; NPS &middot; TrailLink</span>
+  <span>Unscripted6160 Heartbeat of America Tour &middot; Tour Design Database v2 &middot; Auto-saved locally</span>
+</div>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────
+const INITIAL_LIBRARY = [{"id":"odt","type":"trail","name":"Olympic Discovery Trail","state":"WA","region":"pacific-nw","miles":135,"surface":["paved","gravel"],"trailType":"Rail Trail","ekg":"up2","status":"Partial","difficulty":3,"scenery":5,"history":3,"cycling":4,"uniqueness":5,"priority":"A","notes":"Western anchor \u2014 Puget Sound to Pacific through Olympic NP fringe. Coastal bluffs, salmon rivers, ferry crossings.","themes":["coastal","mountains","national-park"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"p-olympic-np","type":"poi","name":"Olympic National Park","state":"WA","region":"pacific-nw","category":"National Park","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Three distinct ecosystems: glacier peaks, Hoh Rain Forest, and wild Pacific coastline.","themes":["national-park","coastal","mountains"],"tags":["national-park","bucket-list"],"mustDo":["Hoh Rain Forest walk","Ruby Beach sunset","Hurricane Ridge overlook"],"routeGroups":["heartbeat-classic"]},{"id":"c-ow","type":"connection","name":"US-101 to Willapa Hills Link","state":"WA","region":"pacific-nw","miles":55,"priority":"B","notes":"Exit Olympic Peninsula via US-101 south and SR-8 east to Willapa Hills trailhead in Chehalis.","routeGroups":["heartbeat-classic"]},{"id":"willapa","type":"trail","name":"Willapa Hills Trail","state":"WA","region":"pacific-nw","miles":56,"surface":["gravel"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Chehalis to South Bend through pastoral farmland, river wetlands, and second-growth forest. Quiet and underrated.","themes":["small-town-america","river-corridor"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"c-wi","type":"connection","name":"SR-6 / US-12 to Iron Horse","state":"WA","region":"pacific-nw","miles":70,"priority":"B","notes":"Head east toward Snoqualmie Valley. Iron Horse trailhead near North Bend / Cedar Falls.","routeGroups":["heartbeat-classic"]},{"id":"p-snoqualmie","type":"poi","name":"Snoqualmie Falls and Twin Peaks Country","state":"WA","region":"pacific-nw","category":"Landmark / Culture","scenery":5,"history":3,"uniqueness":4,"priority":"B","notes":"268-foot waterfall sacred to the Snoqualmie people. Twin Peaks filming location. Historic railway museum.","themes":["small-town-america","railroad"],"tags":["culture","iconic"],"mustDo":["Snoqualmie Falls overlook","Northwest Railway Museum","Salish Lodge brunch"],"routeGroups":[]},{"id":"ironhorse","type":"trail","name":"Iron Horse State Park Trail","state":"WA","region":"pacific-nw","miles":253,"surface":["gravel","dirt"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":3,"scenery":5,"history":4,"cycling":3,"uniqueness":5,"priority":"A","notes":"The great Cascade crossing via Milwaukee Road. 2.3-mile Snoqualmie Tunnel. Descends dramatically into Columbia Basin.","themes":["railroad","mountains","westward-expansion"],"tags":["rail-trail","tunnel"],"routeGroups":["heartbeat-classic"]},{"id":"p-ellensburg","type":"poi","name":"Ellensburg and Kittitas Valley","state":"WA","region":"pacific-nw","category":"Town / Culture","scenery":3,"history":2,"uniqueness":3,"priority":"C","notes":"Western Washington cowboy town. Rodeo culture, Yakima River world-class fly fishing.","themes":["small-town-america"],"tags":["culture"],"mustDo":["Ellensburg Rodeo (Labor Day)","Yakima River Canyon overlook"],"routeGroups":[]},{"id":"centennial","type":"trail","name":"Centennial Trail","state":"WA/ID","region":"pacific-nw","miles":61,"surface":["paved"],"trailType":"Rail Trail / Greenway","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":3,"cycling":5,"uniqueness":3,"priority":"A","notes":"Spokane to Coeur d Alene following the Spokane River. Beautiful river canyon and a nearly traffic-free connection between major trail systems.","themes":["river-corridor","railroad"],"tags":["rail-trail","paved"],"routeGroups":["heartbeat-classic"]},{"id":"columbia-plateau","type":"trail","name":"Columbia Plateau Trail","state":"WA","region":"pacific-nw","miles":130,"surface":["crushed-stone","gravel"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":3,"scenery":5,"history":3,"cycling":3,"uniqueness":5,"priority":"B","notes":"Cheney to Pasco through dramatic Ice Age flood scablands. Remote and unlike anything else on the route.","themes":["railroad","mountains"],"tags":["rail-trail","remote"],"routeGroups":["heartbeat-classic"]},{"id":"p-spokane","type":"poi","name":"Spokane WA","state":"WA","region":"pacific-nw","category":"City Stop","scenery":4,"history":2,"uniqueness":3,"priority":"B","notes":"Inland Empire hub. Riverfront Park, falls in the city center, thriving food scene.","themes":["small-town-america","river-corridor"],"tags":["city"],"mustDo":["Spokane Falls / Riverfront Park","Centennial Trail through the city","Manito Park"],"routeGroups":[]},{"id":"p-palouse-falls","type":"poi","name":"Palouse Falls","state":"WA","region":"pacific-nw","category":"State Park","scenery":5,"history":3,"uniqueness":5,"priority":"B","notes":"Washington state waterfall \u2014 198-foot plunge into basalt canyon carved by Ice Age floods.","themes":["mountains","river-corridor"],"tags":["state-park","geology"],"mustDo":["Sunrise overlook","Photography from upper rim","Ice Age Floods geology stop"],"routeGroups":[]},{"id":"c-spokane-cda","type":"connection","name":"US-195 / SR-902 to Coeur d Alene","state":"WA/ID","region":"northern-rockies","miles":35,"priority":"B","notes":"Short road hop from Spokane metro into Idaho Panhandle. Flat with wide shoulders along Spokane River.","routeGroups":["heartbeat-classic"]},{"id":"cda","type":"trail","name":"Trail of the Coeur d Alenes","state":"ID","region":"northern-rockies","miles":72,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":5,"history":4,"cycling":5,"uniqueness":5,"priority":"A","notes":"Plummer to Mullan along Lake Coeur d Alene and the river. Silver Valley mining heritage. One of the finest rail trails in America.","themes":["railroad","waterway","river-corridor"],"tags":["rail-trail","paved","bucket-list"],"routeGroups":["heartbeat-classic"]},{"id":"p-lake-cda","type":"poi","name":"Lake Coeur d Alene","state":"ID","region":"northern-rockies","category":"Natural Wonder","scenery":5,"history":2,"uniqueness":4,"priority":"A","notes":"One of the most beautiful lakes in America. The trail rides along its shores.","themes":["coastal","mountains"],"tags":["lake","scenic"],"mustDo":["Sunrise on the lake at Harrison ID","Coeur d Alene Resort waterfront"],"routeGroups":[]},{"id":"c-cda-hiawatha","type":"connection","name":"SR-3 / FR-456 to Hiawatha Trailhead","state":"ID","region":"northern-rockies","miles":28,"priority":"B","notes":"Climb from Silver Valley into the Bitterroot Mountains toward the Montana border.","routeGroups":["heartbeat-classic"]},{"id":"hiawatha","type":"trail","name":"Route of the Hiawatha","state":"ID/MT","region":"northern-rockies","miles":15,"surface":["gravel"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":2,"scenery":5,"history":4,"cycling":5,"uniqueness":5,"priority":"A","notes":"Bucket list. 1.66-mile Taft Tunnel, nine more tunnels, seven sky-high trestles. Drops 1000 feet through the Bitterroots.","themes":["railroad","mountains"],"tags":["rail-trail","tunnel","bucket-list"],"routeGroups":["heartbeat-classic"]},{"id":"p-wallace","type":"poi","name":"Wallace ID \u2014 Silver Capital","state":"ID","region":"northern-rockies","category":"Historic Town","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Entire downtown on the National Register. Perfectly preserved silver mining town. I-90 runs through the historic district.","themes":["industrial","railroad","small-town-america"],"tags":["historic","mining"],"mustDo":["Oasis Bordello Museum","Sierra Silver Mine Tour","Historic Wallace walk"],"routeGroups":[]},{"id":"c-mt-corridor","type":"connection","name":"I-90 East / Route of the Olympian Corridor","state":"MT","region":"northern-rockies","miles":180,"priority":"B","notes":"Route of the Olympian parallels I-90 through western Montana. Mix of trail and low-traffic roads along Clark Fork River.","routeGroups":["heartbeat-classic"]},{"id":"olympian","type":"trail","name":"Route of the Olympian","state":"MT/ID","region":"northern-rockies","miles":200,"surface":["gravel","dirt"],"trailType":"Rail Trail","ekg":"up1","status":"In Development","difficulty":3,"scenery":5,"history":3,"cycling":3,"uniqueness":5,"priority":"A","notes":"Major gap in the Great American Rail-Trail. St. Regis eastward through epic Clark Fork River canyon.","themes":["railroad","mountains","river-corridor"],"tags":["rail-trail","gap","scenic"],"routeGroups":["heartbeat-classic"]},{"id":"p-missoula","type":"poi","name":"Missoula MT","state":"MT","region":"northern-rockies","category":"City Stop","scenery":4,"history":3,"uniqueness":4,"priority":"A","notes":"Adventure Cycling Association HQ. Clark Fork River through the city. University town and world-class fly fishing mecca.","themes":["river-corridor","small-town-america"],"tags":["city","cycling-hub"],"mustDo":["Adventure Cycling Association HQ visit","Clark Fork Riverfront trail","Big Sky Brewing"],"routeGroups":[]},{"id":"p-glacier-np","type":"poi","name":"Glacier National Park","state":"MT","region":"northern-rockies","category":"National Park \u2014 Detour","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Going-to-the-Sun Road is one of the most spectacular rides on earth. Major northern EKG spike option.","themes":["national-park","mountains"],"tags":["national-park","bucket-list","northern-deviation"],"mustDo":["Going-to-the-Sun Road","Logan Pass","Grinnell Glacier hike"],"routeGroups":[]},{"id":"p-lewis-clark-caverns","type":"poi","name":"Lewis and Clark Caverns","state":"MT","region":"northern-rockies","category":"State Park","scenery":4,"history":4,"uniqueness":4,"priority":"B","notes":"One of the most impressive limestone cave systems in the western US. Jefferson River overlook.","themes":["westward-expansion","mountains"],"tags":["cave","state-park"],"mustDo":["Guided cave tour","Jefferson River overlook"],"routeGroups":[]},{"id":"p-gates-mountains","type":"poi","name":"Gates of the Mountains","state":"MT","region":"northern-rockies","category":"Historic Landscape","scenery":5,"history":5,"uniqueness":5,"priority":"B","notes":"Named by Meriwether Lewis in 1805. Towering limestone cliffs above the Missouri River.","themes":["westward-expansion","river-corridor"],"tags":["lewis-clark","historic"],"mustDo":["Missouri River boat tour","Lewis and Clark interpretive sites"],"routeGroups":[]},{"id":"p-little-bighorn","type":"poi","name":"Little Bighorn Battlefield","state":"MT","region":"northern-rockies","category":"Historic Site","scenery":3,"history":5,"uniqueness":5,"priority":"A","notes":"Site of Custers Last Stand 1876. Told from both US Army and Lakota / Cheyenne perspectives.","themes":["native-american-history","westward-expansion"],"tags":["battlefield","historic"],"mustDo":["Last Stand Hill monument","Indian Memorial","Ranger-led tours"],"routeGroups":[]},{"id":"c-billings-wy","type":"connection","name":"US-12 / MT-1 to Billings and Wyoming","state":"MT/WY","region":"great-plains","miles":220,"priority":"B","notes":"Cross central Montana to Wyoming through Big Sky country \u2014 rolling prairies and Yellowstone River valley.","routeGroups":["heartbeat-classic"]},{"id":"c-wy-approach","type":"connection","name":"I-90 / US-14 Wyoming and Casper Approach","state":"WY","region":"great-plains","miles":150,"priority":"B","notes":"Drop into Wyoming through the Bighorn Mountains. US-14 through Bighorn Canyon is spectacular cycling.","routeGroups":["heartbeat-classic"]},{"id":"p-yellowstone","type":"poi","name":"Yellowstone and Grand Teton","state":"WY","region":"great-plains","category":"National Park \u2014 Detour","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Ultimate southern spike. Worlds first national park plus the jagged Tetons. Adds 300 miles but unforgettable.","themes":["national-park","mountains"],"tags":["national-park","bucket-list","southern-deviation"],"mustDo":["Old Faithful","Grand Prismatic Spring","Snake River float","Jackson Hole"],"routeGroups":[]},{"id":"casper-trail","type":"trail","name":"Casper Rail Trail / Platte River Trails","state":"WY","region":"great-plains","miles":12,"surface":["paved"],"trailType":"Rail Trail / Greenway","ekg":"flat","status":"Established","difficulty":1,"scenery":3,"history":3,"cycling":3,"uniqueness":2,"priority":"B","notes":"Casper urban connector along North Platte River. Gateway to the Cowboy Trail.","themes":["river-corridor","railroad"],"tags":["rail-trail","urban"],"routeGroups":["heartbeat-classic"]},{"id":"p-independence-rock","type":"poi","name":"Independence Rock","state":"WY","region":"great-plains","category":"Historic Landmark","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"The Great Register of the Desert. Over 5000 Oregon Trail names carved into this granite dome.","themes":["westward-expansion"],"tags":["oregon-trail","historic"],"mustDo":["Climb to the top","Find the oldest carved names"],"routeGroups":[]},{"id":"c-wy-ne","type":"connection","name":"US-20 / WY-270 Nebraska Border Road","state":"WY/NE","region":"great-plains","miles":95,"priority":"B","notes":"Head east from Douglas WY through high prairie toward Chadron NE. Shortgrass prairie, antelope everywhere.","routeGroups":["heartbeat-classic"]},{"id":"cowboy","type":"trail","name":"Cowboy Recreation and Nature Trail","state":"NE","region":"great-plains","miles":321,"surface":["crushed-limestone","dirt"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":3,"scenery":4,"history":4,"cycling":3,"uniqueness":5,"priority":"A","notes":"Chadron to Norfolk \u2014 321 miles across the Nebraska Sandhills. Longest rail trail in Nebraska. Vast and remote.","themes":["railroad","westward-expansion","small-town-america"],"tags":["rail-trail","remote","bucket-list"],"routeGroups":["heartbeat-classic"]},{"id":"mickelson","type":"trail","name":"George S Mickelson Trail","state":"SD","region":"great-plains","miles":109,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":2,"scenery":5,"history":4,"cycling":4,"uniqueness":5,"priority":"A","notes":"Deadwood to Edgemont through the Black Hills. 100+ converted railroad bridges and tunnels.","themes":["railroad","mountains","native-american-history"],"tags":["rail-trail","tunnel","northern-deviation"],"routeGroups":["heartbeat-classic"]},{"id":"p-scotts-bluff","type":"poi","name":"Scotts Bluff National Monument","state":"NE","region":"great-plains","category":"Historic Landmark","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Major Oregon Trail landmark towering above the North Platte Valley.","themes":["westward-expansion"],"tags":["oregon-trail","historic"],"mustDo":["Summit Road overlook","Oregon Trail exhibits"],"routeGroups":[]},{"id":"p-sandhills","type":"poi","name":"Nebraska Sandhills","state":"NE","region":"great-plains","category":"Natural Wonder","scenery":5,"history":2,"uniqueness":5,"priority":"A","notes":"Largest sand dune formation in the Western Hemisphere, stabilized by grass. Crystal-clear spring-fed lakes.","themes":["mountains"],"tags":["geology","remote","scenic"],"mustDo":["Sunrise over the Sandhills","Valentine NE \u2014 Smith Falls State Park"],"routeGroups":[]},{"id":"p-chimney-rock","type":"poi","name":"Chimney Rock","state":"NE","region":"great-plains","category":"Historic Landmark","scenery":4,"history":5,"uniqueness":5,"priority":"B","notes":"Most-mentioned landmark in Oregon Trail diaries. 325-foot spire above the North Platte Valley.","themes":["westward-expansion"],"tags":["oregon-trail","historic"],"mustDo":["Visitor center with trail diaries","Sunset photography"],"routeGroups":[]},{"id":"p-rushmore-badlands","type":"poi","name":"Mount Rushmore and Badlands","state":"SD","region":"great-plains","category":"National Monument \u2014 Detour","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"Northern spike option. Rushmore, Crazy Horse Memorial, and the otherworldly Badlands.","themes":["national-park","mountains","native-american-history"],"tags":["national-park","northern-deviation"],"mustDo":["Crazy Horse Memorial","Badlands at dawn","Needles Highway"],"routeGroups":[]},{"id":"p-crazy-horse","type":"poi","name":"Crazy Horse Memorial","state":"SD","region":"great-plains","category":"Monument","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"The worlds largest mountain carving in progress. More significant to many than Rushmore.","themes":["native-american-history","mountains"],"tags":["monument","bucket-list"],"mustDo":["Evening laser show","Native American Cultural Center"],"routeGroups":[]},{"id":"c-missouri-crossing","type":"connection","name":"Missouri River Crossing US-275","state":"NE/IA","region":"midwest","miles":25,"priority":"B","notes":"Cross the Missouri River from Nebraska into Iowa. Traditional edge of the frontier.","routeGroups":["heartbeat-classic"]},{"id":"p-omaha","type":"poi","name":"Omaha NE and Council Bluffs IA","state":"NE/IA","region":"midwest","category":"City Stop","scenery":3,"history":4,"uniqueness":4,"priority":"B","notes":"Major metro straddling the Missouri. Lewis and Clark history, Old Market district.","themes":["westward-expansion","river-corridor"],"tags":["city","food"],"mustDo":["Lewis and Clark Monument Council Bluffs","Old Market Omaha","Joslyn Art Museum"],"routeGroups":[]},{"id":"wabash-trace","type":"trail","name":"Wabash Trace Nature Trail","state":"IA","region":"midwest","miles":63,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":2,"scenery":3,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Council Bluffs to Blanchard through rolling southwestern Iowa farmland.","themes":["railroad","small-town-america"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"raccoon-river","type":"trail","name":"Raccoon River Valley Trail","state":"IA","region":"midwest","miles":89,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Jefferson to Des Moines area through beautiful Iowa prairie and river valley.","themes":["river-corridor","small-town-america"],"tags":["rail-trail","paved"],"routeGroups":["heartbeat-classic"]},{"id":"p-des-moines","type":"poi","name":"Des Moines IA","state":"IA","region":"midwest","category":"City Stop","scenery":3,"history":2,"uniqueness":4,"priority":"B","notes":"Underrated capital. World-class art museum (free), thriving food scene, High Trestle Bridge nearby.","themes":["small-town-america"],"tags":["city","culture"],"mustDo":["High Trestle Trail Bridge at dusk","Des Moines Art Center"],"routeGroups":[]},{"id":"high-trestle","type":"trail","name":"High Trestle Trail","state":"IA","region":"midwest","miles":25,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":2,"cycling":5,"uniqueness":5,"priority":"A","notes":"Home of the iconic illuminated High Trestle Bridge spanning the Des Moines River Valley.","themes":["railroad","river-corridor"],"tags":["rail-trail","paved","iconic"],"routeGroups":["heartbeat-classic"]},{"id":"cedar-valley","type":"trail","name":"Cedar Valley Nature Trail","state":"IA","region":"midwest","miles":52,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":3,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Waterloo to Cedar Rapids. Part of Great American Rail-Trail alignment.","themes":["railroad","small-town-america"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"p-mississippi","type":"poi","name":"Mississippi River Crossing","state":"IA/IL","region":"midwest","category":"Geographic Milestone","scenery":4,"history":4,"uniqueness":5,"priority":"A","notes":"Crossing Ol Miss is one of the great symbolic moments. Massive river alive with barge traffic.","themes":["river-corridor","westward-expansion"],"tags":["milestone","river"],"mustDo":["Dubuque IA blufftop views","Galena IL \u2014 most preserved Civil War town in the Midwest"],"routeGroups":[]},{"id":"hennepin-canal","type":"trail","name":"Hennepin Canal Parkway State Trail","state":"IL","region":"midwest","miles":104,"surface":["gravel","dirt"],"trailType":"Canal Towpath","ekg":"down1","status":"Established","difficulty":2,"scenery":4,"history":5,"cycling":3,"uniqueness":4,"priority":"A","notes":"Bureau to Rock Falls along the historic Hennepin Canal \u2014 first all-concrete canal in the US (1907). 33 lift locks.","themes":["waterway","industrial","railroad"],"tags":["canal-towpath"],"routeGroups":["heartbeat-classic"]},{"id":"p-galena","type":"poi","name":"Galena IL","state":"IL","region":"midwest","category":"Historic Town","scenery":4,"history":5,"uniqueness":5,"priority":"B","notes":"Most beautifully preserved antebellum town in the Midwest. 85% of buildings on National Register. Grant lived here.","themes":["civil-war","small-town-america"],"tags":["historic","civil-war"],"mustDo":["U.S. Grant Home State Historic Site","Main Street Victorian architecture walk"],"routeGroups":[]},{"id":"illinois-prairie","type":"trail","name":"Illinois Prairie Path","state":"IL","region":"midwest","miles":61,"surface":["crushed-limestone","paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":3,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Wheaton to Chicago suburbs. Americas first rail trail (1963). Connects to Chicago lakefront trail network.","themes":["railroad"],"tags":["rail-trail","historic-trail"],"routeGroups":["heartbeat-classic"]},{"id":"p-chicago","type":"poi","name":"Chicago IL","state":"IL","region":"midwest","category":"Major City Stop","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"Architectural and cultural heart of Middle America. 18-mile car-free Lakefront Trail along Lake Michigan.","themes":["industrial","river-corridor"],"tags":["city","architecture","food"],"mustDo":["Lakefront Trail \u2014 18 miles car-free","The 606 elevated rail trail","Architecture Center boat tour","Deep dish pizza","Art Institute of Chicago"],"routeGroups":[]},{"id":"c-chicago-indiana","type":"connection","name":"Chicago to Indiana Border","state":"IL/IN","region":"midwest","miles":40,"priority":"B","notes":"Exit Chicago south via Lakefront Trail and South Shore communities to the Indiana Dunes area.","routeGroups":["heartbeat-classic"]},{"id":"calumet","type":"trail","name":"Calumet Trail","state":"IN","region":"midwest","miles":9,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":1,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Porter to Michigan City along Lake Michigan dunes. Indiana Dunes National Park flanking the route.","themes":["coastal","national-park"],"tags":["rail-trail","coastal"],"routeGroups":["heartbeat-classic"]},{"id":"p-indiana-dunes","type":"poi","name":"Indiana Dunes National Park","state":"IN","region":"midwest","category":"National Park","scenery":4,"history":3,"uniqueness":4,"priority":"A","notes":"Most biologically diverse national park \u2014 dunes, bogs, prairies, and forest along Lake Michigan.","themes":["national-park","coastal"],"tags":["national-park","biodiversity"],"mustDo":["Mount Baldy dune climb","West Beach sunrise"],"routeGroups":[]},{"id":"cardinal-greenway","type":"trail","name":"Cardinal Greenway","state":"IN","region":"midwest","miles":62,"surface":["paved"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":2,"scenery":3,"history":3,"cycling":4,"uniqueness":3,"priority":"A","notes":"Marion to Richmond \u2014 Indiana longest rail trail. Part of Great American Rail-Trail. Classic Midwestern farmland.","themes":["railroad","small-town-america"],"tags":["rail-trail","paved"],"routeGroups":["heartbeat-classic"]},{"id":"p-richmond-in","type":"poi","name":"Richmond IN \u2014 National Road Gateway","state":"IN","region":"midwest","category":"Town Stop","scenery":2,"history":4,"uniqueness":3,"priority":"C","notes":"Gateway to Ohio. The National Road (US-40) corridor has deep American history.","themes":["westward-expansion","small-town-america"],"tags":["historic","road"],"mustDo":["National Road heritage sites"],"routeGroups":[]},{"id":"elroy-sparta","type":"trail","name":"Elroy-Sparta State Trail","state":"WI","region":"midwest","miles":32,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Americas first rail trail. Three long railroad tunnels. Famous Driftless Area scenery.","themes":["railroad","small-town-america","river-corridor"],"tags":["rail-trail","tunnel","historic-trail"],"routeGroups":["heartbeat-classic"]},{"id":"400-state","type":"trail","name":"400 State Trail","state":"WI","region":"midwest","miles":22,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Scenic Driftless Area valleys. Links with several Wisconsin trail systems.","themes":["river-corridor","small-town-america"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"great-river-wi","type":"trail","name":"Great River State Trail","state":"WI","region":"midwest","miles":24,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":5,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"Follows the Mississippi River bluffs through stunning Great River Road scenery.","themes":["river-corridor"],"tags":["rail-trail","river"],"routeGroups":["heartbeat-classic"]},{"id":"katy-trail","type":"trail","name":"Katy Trail \u2014 Missouri","state":"MO","region":"midwest","miles":240,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"down2","status":"Established","difficulty":1,"scenery":4,"history":4,"cycling":4,"uniqueness":5,"priority":"A","notes":"SOUTHERN EKG DIP: Clinton to Machens along Missouri River \u2014 longest developed rail trail in the US. Wine country and Lewis and Clark history.","themes":["railroad","waterway","westward-expansion","river-corridor"],"tags":["rail-trail","southern-deviation","bucket-list"],"routeGroups":["southern-deviation"]},{"id":"p-gateway-arch","type":"poi","name":"Gateway Arch St Louis MO","state":"MO","region":"midwest","category":"Landmark","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"The 630-foot stainless steel arch \u2014 gateway to the West. Museum of Westward Expansion beneath it.","themes":["westward-expansion","industrial"],"tags":["landmark","iconic","bucket-list"],"mustDo":["Tram ride to the top","Museum of Westward Expansion","Laclede Landing"],"routeGroups":[]},{"id":"c-ohio-pa-entry","type":"connection","name":"OH-82 / Stavich Trail to Pennsylvania","state":"OH/PA","region":"ohio-valley","miles":30,"priority":"B","notes":"Stavich Bicycle Trail carries you from Lowellville to New Castle PA along Mahoning River. Smooth state-line crossing.","routeGroups":["heartbeat-classic"]},{"id":"ohio-to-erie","type":"trail","name":"Ohio to Erie Trail","state":"OH","region":"ohio-valley","miles":326,"surface":["paved","crushed-limestone"],"trailType":"Rail Trail / Multi-use","ekg":"up2","status":"Established","difficulty":2,"scenery":4,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Cincinnati to Cleveland \u2014 crosses the entire state of Ohio. Great American Rail-Trail. Links systems through Columbus.","themes":["railroad","river-corridor"],"tags":["rail-trail","paved"],"routeGroups":["heartbeat-classic"]},{"id":"p-cuyahoga-valley","type":"poi","name":"Cuyahoga Valley National Park","state":"OH","region":"ohio-valley","category":"National Park","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"Only national park in Ohio. Ohio and Erie Canal Towpath runs through it. Waterfalls, herons, historic locks.","themes":["national-park","waterway","railroad"],"tags":["national-park","towpath"],"mustDo":["Brandywine Falls","Ohio and Erie Canal Towpath ride","Cuyahoga Valley Scenic Railroad"],"routeGroups":[]},{"id":"ohio-erie-canal","type":"trail","name":"Ohio and Erie Canal Towpath Trail","state":"OH","region":"ohio-valley","miles":101,"surface":["crushed-limestone"],"trailType":"Canal Towpath","ekg":"down1","status":"Established","difficulty":1,"scenery":4,"history":5,"cycling":4,"uniqueness":5,"priority":"A","notes":"Cleveland to Zoar along original Ohio and Erie Canal. 33 original lift locks. Through Cuyahoga Valley NP.","themes":["waterway","industrial","railroad"],"tags":["canal-towpath"],"routeGroups":["heartbeat-classic"]},{"id":"p-cleveland","type":"poi","name":"Cleveland OH","state":"OH","region":"ohio-valley","category":"City Stop","scenery":4,"history":4,"uniqueness":4,"priority":"B","notes":"Rock and Roll Hall of Fame, West Side Market, Metroparks trail system. Lakefront renaissance underway.","themes":["industrial","river-corridor"],"tags":["city","music","food"],"mustDo":["Rock and Roll Hall of Fame","West Side Market","Great Lakes Brewing"],"routeGroups":[]},{"id":"panhandle","type":"trail","name":"Panhandle Trail","state":"WV/PA","region":"appalachia","miles":29,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":3,"history":3,"cycling":4,"uniqueness":3,"priority":"B","notes":"Weirton WV to Collier PA through WV Panhandle. Connects Ohio Valley to Pittsburgh metro.","themes":["railroad","industrial"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"montour","type":"trail","name":"Montour Trail","state":"PA","region":"appalachia","miles":63,"surface":["crushed-limestone","paved"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":3,"history":3,"cycling":4,"uniqueness":3,"priority":"B","notes":"Loops around southwest Pittsburgh connecting Panhandle Trail to the GAP. Critical Pittsburgh network link.","themes":["railroad","industrial"],"tags":["rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"p-pittsburgh","type":"poi","name":"Pittsburgh PA","state":"PA","region":"appalachia","category":"City Stop","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"City of 446 Bridges. Where Allegheny and Monongahela meet the Ohio River. GAP begins at Point State Park.","themes":["industrial","railroad","river-corridor"],"tags":["city","bridges","food"],"mustDo":["Point State Park \u2014 GAP trailhead","Duquesne Incline","Strip District food market","Primanti Brothers sandwich"],"routeGroups":[]},{"id":"gap","type":"trail","name":"Great Allegheny Passage","state":"PA/MD","region":"appalachia","miles":150,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":2,"scenery":5,"history":5,"cycling":5,"uniqueness":5,"priority":"A","notes":"Pittsburgh to Cumberland MD. Crosses Eastern Continental Divide at Meyersdale. Crown jewel of American rail trails.","themes":["railroad","industrial","mountains","waterway"],"tags":["rail-trail","bucket-list","great-american"],"routeGroups":["heartbeat-classic"]},{"id":"ghost-town","type":"trail","name":"Ghost Town Trail","state":"PA","region":"appalachia","miles":46,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":4,"history":4,"cycling":4,"uniqueness":4,"priority":"B","notes":"Nanty Glo to Dilltown through former coal-mining ghost towns. Eerie, atmospheric, historically rich.","themes":["railroad","industrial","small-town-america"],"tags":["rail-trail","mining"],"routeGroups":["heartbeat-classic"]},{"id":"pine-creek","type":"trail","name":"Pine Creek Rail Trail","state":"PA","region":"appalachia","miles":62,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":2,"scenery":5,"history":3,"cycling":4,"uniqueness":5,"priority":"A","notes":"The Grand Canyon of Pennsylvania. Spectacular gorge riding along Pine Creek.","themes":["mountains","river-corridor"],"tags":["rail-trail","gorge","scenic"],"routeGroups":["appalachia-alt"]},{"id":"dl-trail","type":"trail","name":"Delaware and Lehigh Trail","state":"PA","region":"appalachia","miles":165,"surface":["crushed-stone","canal-towpath"],"trailType":"Rail Trail / Canal Towpath","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":5,"cycling":4,"uniqueness":5,"priority":"A","notes":"Historic coal-to-market corridor following Delaware and Lehigh rivers through eastern Pennsylvania. Industrial heritage.","themes":["waterway","industrial","railroad"],"tags":["canal-towpath","rail-trail"],"routeGroups":["heartbeat-classic"]},{"id":"p-kinzua","type":"poi","name":"Kinzua Bridge Skywalk","state":"PA","region":"appalachia","category":"Engineering Landmark","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"Remains of one of the worlds tallest railroad viaducts converted into a skywalk. Dramatic gorge views.","themes":["railroad","industrial","mountains"],"tags":["engineering","landmark"],"mustDo":["Skywalk overlook","Visitor Center"],"routeGroups":[]},{"id":"p-flight93","type":"poi","name":"Flight 93 National Memorial","state":"PA","region":"appalachia","category":"Memorial","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Site of the September 11 crash in the Laurel Highlands. Profoundly moving landscape memorial.","themes":["modern-history"],"tags":["memorial","bucket-list"],"mustDo":["Memorial Plaza","Wall of Names","Visitor Center"],"routeGroups":[]},{"id":"p-gettysburg","type":"poi","name":"Gettysburg National Military Park","state":"PA","region":"appalachia","category":"Historic Site","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Three-day battle that turned the tide of the Civil War. 1300 monuments across a preserved battlefield.","themes":["civil-war"],"tags":["battlefield","historic","bucket-list"],"mustDo":["Little Round Top","Picketts Charge site","National Cemetery"],"routeGroups":[]},{"id":"p-ohiopyle","type":"poi","name":"Ohiopyle State Park","state":"PA","region":"appalachia","category":"State Park","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"GAP runs through this whitewater paradise. Youghiogheny gorge spectacular. Fallingwater 8 miles away.","themes":["mountains","river-corridor"],"tags":["state-park","whitewater"],"mustDo":["Ferncliff Peninsula loop","Fallingwater tour (8 mi from trail)","Whitewater rafting"],"routeGroups":[]},{"id":"p-fallingwater","type":"poi","name":"Frank Lloyd Wright Fallingwater","state":"PA","region":"appalachia","category":"Architectural Landmark","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"Arguably the greatest work of American architecture. House cantilevered over a waterfall in the Laurel Highlands.","themes":["industrial","mountains"],"tags":["architecture","bucket-list"],"mustDo":["Guided interior tour","Kentuck Knob combo visit"],"routeGroups":[]},{"id":"p-continental-divide","type":"poi","name":"Eastern Continental Divide and Big Savage Tunnel","state":"PA","region":"appalachia","category":"Geographic Milestone","scenery":4,"history":4,"uniqueness":5,"priority":"A","notes":"GAP crosses Eastern Continental Divide at Meyersdale. Big Savage Tunnel (3294 ft) is a thrilling ride.","themes":["mountains","railroad"],"tags":["milestone","tunnel"],"mustDo":["Continental Divide marker photo stop","Big Savage Tunnel \u2014 bring lights"],"routeGroups":[]},{"id":"p-bethlehem","type":"poi","name":"Bethlehem PA","state":"PA","region":"appalachia","category":"Historic Industrial City","scenery":4,"history":5,"uniqueness":4,"priority":"B","notes":"Home of Bethlehem Steel. One of Americas most significant industrial heritage sites.","themes":["industrial","railroad"],"tags":["steel","industrial-heritage"],"mustDo":["SteelStacks arts complex","Historic Moravian district","National Museum of Industrial History"],"routeGroups":[]},{"id":"new-river-va","type":"trail","name":"New River Trail State Park","state":"VA","region":"appalachia","miles":57,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":2,"scenery":5,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Follows the New River through Appalachia. Long bridges, river views, remarkably gentle grades.","themes":["railroad","river-corridor","mountains"],"tags":["rail-trail","river"],"routeGroups":["appalachia-alt"]},{"id":"virginia-creeper","type":"trail","name":"Virginia Creeper Trail","state":"VA","region":"appalachia","miles":34,"surface":["crushed-limestone"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":5,"history":3,"cycling":4,"uniqueness":5,"priority":"A","notes":"One of the most famous rail trails in the country. Damascus to Whitetop through the Blue Ridge Highlands.","themes":["railroad","mountains"],"tags":["rail-trail","bucket-list"],"routeGroups":["appalachia-alt"]},{"id":"greenbrier-river","type":"trail","name":"Greenbrier River Trail","state":"WV","region":"appalachia","miles":78,"surface":["gravel"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":5,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"One of the longest and most scenic rail trails in the East. Follows the Greenbrier River through rural West Virginia.","themes":["railroad","river-corridor","mountains"],"tags":["rail-trail","scenic"],"routeGroups":["appalachia-alt"]},{"id":"p-new-river-gorge","type":"poi","name":"New River Gorge National Park","state":"WV","region":"appalachia","category":"National Park","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Americas newest national park. World-class rock climbing and whitewater on the New River.","themes":["national-park","mountains","river-corridor"],"tags":["national-park","whitewater","climbing"],"mustDo":["New River Gorge Bridge overlook","Grandview","Thurmond ghost town"],"routeGroups":[]},{"id":"p-cumberland","type":"poi","name":"Cumberland MD \u2014 The Pivot Point","state":"MD","region":"mid-atlantic","category":"Historic Town","scenery":3,"history":5,"uniqueness":4,"priority":"A","notes":"Where GAP ends and C&O begins. Western terminus of both the C&O Canal and the National Road.","themes":["railroad","waterway","westward-expansion"],"tags":["historic","trail-town"],"mustDo":["Western Maryland Scenic Railroad","Canal Place Heritage Area","The perfect GAP to CO transition"],"routeGroups":[]},{"id":"p-paw-paw","type":"poi","name":"Paw Paw Tunnel","state":"MD","region":"mid-atlantic","category":"Canal Engineering","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"A 3118-foot tunnel built for the C&O Canal. One of the signature features of the entire towpath experience.","themes":["waterway","industrial"],"tags":["canal","tunnel","engineering"],"mustDo":["Walk the tunnel","Canal engineering exhibits"],"routeGroups":[]},{"id":"co-canal","type":"trail","name":"C&O Canal Towpath","state":"MD/DC","region":"mid-atlantic","miles":184,"surface":["dirt","gravel"],"trailType":"Canal Towpath","ekg":"down1","status":"Established (NPS)","difficulty":2,"scenery":5,"history":5,"cycling":4,"uniqueness":5,"priority":"A","notes":"Cumberland to Washington DC along Potomac River \u2014 184 miles of National Park. 74 historic lift locks preserved.","themes":["waterway","civil-war","westward-expansion","river-corridor"],"tags":["canal-towpath","national-park","bucket-list"],"routeGroups":["heartbeat-classic"]},{"id":"p-harpers-ferry","type":"poi","name":"Harpers Ferry WV","state":"WV","region":"mid-atlantic","category":"Historic Town","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"Where Potomac and Shenandoah Rivers meet. John Brown 1859 raid helped spark the Civil War.","themes":["civil-war","river-corridor"],"tags":["historic","civil-war"],"mustDo":["John Brown Fort","Jefferson Rock overlook","Appalachian Trail crossing"],"routeGroups":[]},{"id":"p-antietam","type":"poi","name":"Antietam National Battlefield","state":"MD","region":"mid-atlantic","category":"Historic Site","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"September 17 1862 \u2014 bloodiest single day in American history. 6 miles from the C&O towpath.","themes":["civil-war"],"tags":["battlefield","historic","civil-war"],"mustDo":["Cornfield auto tour","Burnside Bridge","Antietam National Cemetery"],"routeGroups":[]},{"id":"p-great-falls","type":"poi","name":"Great Falls of the Potomac","state":"MD","region":"mid-atlantic","category":"Natural Wonder","scenery":5,"history":3,"uniqueness":5,"priority":"B","notes":"Potomac drops 76 feet through a dramatic gorge just 14 miles from Washington DC.","themes":["river-corridor","national-park"],"tags":["waterfall","scenic"],"mustDo":["Great Falls Tavern Visitor Center","Billy Goat Trail","Mather Gorge overlook"],"routeGroups":[]},{"id":"capital-crescent","type":"trail","name":"Capital Crescent Trail","state":"MD/DC","region":"mid-atlantic","miles":11,"surface":["paved"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":1,"scenery":4,"history":3,"cycling":5,"uniqueness":3,"priority":"A","notes":"Bethesda to Georgetown. Connects C&O directly into Washington DC. Final approach into the capital.","themes":["railroad"],"tags":["rail-trail","paved","urban"],"routeGroups":["heartbeat-classic"]},{"id":"p-washington-dc","type":"poi","name":"Washington DC \u2014 Primary Eastern Terminus","state":"DC","region":"mid-atlantic","category":"Destination / City","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"National Mall, monuments, Smithsonian (all free). C&O terminus at Georgetown. Profound end \u2014 or beginning.","themes":["civil-war","revolutionary-war","westward-expansion","national-park"],"tags":["city","monuments","bucket-list","terminus"],"mustDo":["National Mall at dawn","Lincoln Memorial","Smithsonian National Museum of American History","Georgetown / C&O terminus","Capitol Building"],"routeGroups":[]},{"id":"wod","type":"trail","name":"Washington and Old Dominion Trail","state":"VA","region":"mid-atlantic","miles":45,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":1,"scenery":3,"history":3,"cycling":5,"uniqueness":3,"priority":"A","notes":"Arlington to Purcellville \u2014 Granddaddy of Rail Trails. Northern Virginia horse country.","themes":["railroad"],"tags":["rail-trail","paved"],"routeGroups":["heartbeat-classic"]},{"id":"p-shenandoah","type":"poi","name":"Shenandoah National Park","state":"VA","region":"mid-atlantic","category":"National Park","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Blue Ridge Mountains and spectacular valley views. Skyline Drive is unforgettable.","themes":["national-park","mountains"],"tags":["national-park","scenic-drive"],"mustDo":["Skyline Drive","Dark Hollow Falls","Stony Man Summit"],"routeGroups":[]},{"id":"p-blue-ridge","type":"poi","name":"Blue Ridge Parkway","state":"VA/NC","region":"mid-atlantic","category":"Scenic Byway","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"469 miles of the most scenic road in America along the spine of the Appalachians.","themes":["mountains","scenic-byway"],"tags":["scenic-drive","bucket-list"],"mustDo":["Mabry Mill","Roanoke star viewpoint","Max Patch overlook"],"routeGroups":[]},{"id":"virginia-capital","type":"trail","name":"Virginia Capital Trail","state":"VA","region":"mid-atlantic","miles":52,"surface":["paved"],"trailType":"Dedicated Bike Path","ekg":"down1","status":"Established","difficulty":1,"scenery":4,"history":5,"cycling":4,"uniqueness":4,"priority":"B","notes":"Richmond to Jamestown along the James River. The first English settlement as terminus.","themes":["colonial-history","river-corridor"],"tags":["bike-path","colonial"],"routeGroups":["heartbeat-classic"]},{"id":"p-colonial-wburg","type":"poi","name":"Colonial Williamsburg and Jamestown","state":"VA","region":"mid-atlantic","category":"Historic Site","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Birthplace of Americas colonial story. Jamestown 1607. Worlds largest living history museum.","themes":["colonial-history","revolutionary-war"],"tags":["historic","living-history"],"mustDo":["Jamestown Settlement","Colonial Williamsburg tour","Yorktown Battlefield"],"routeGroups":[]},{"id":"erie-canalway","type":"trail","name":"Erie Canalway Trail","state":"NY","region":"new-york","miles":360,"surface":["paved","crushed-limestone"],"trailType":"Canal Towpath / Rail Trail","ekg":"up2","status":"Established","difficulty":1,"scenery":4,"history":5,"cycling":4,"uniqueness":5,"priority":"A","notes":"NORTHERN SPIKE: Buffalo to Albany along the historic Erie Canal \u2014 opened the West in 1825. 87% off-road.","themes":["waterway","industrial","railroad","westward-expansion"],"tags":["canal-towpath","rail-trail","northern-deviation"],"routeGroups":["northern-tier","heartbeat-classic"]},{"id":"empire-state","type":"trail","name":"Empire State Trail","state":"NY","region":"new-york","miles":750,"surface":["mixed"],"trailType":"Statewide Trail Network","ekg":"up2","status":"Established","difficulty":2,"scenery":4,"history":4,"cycling":4,"uniqueness":5,"priority":"A","notes":"Largest multi-use trail network in America. Connects NYC, Albany, Buffalo, and Canada.","themes":["waterway","mountains","coastal","railroad"],"tags":["network","paved","bucket-list"],"routeGroups":["northern-tier","ne-extension"]},{"id":"harlem-valley","type":"trail","name":"Harlem Valley Rail Trail","state":"NY","region":"new-york","miles":46,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":5,"history":3,"cycling":4,"uniqueness":4,"priority":"B","notes":"Southeastern New York through the scenic Harlem Valley. Connects Hudson Valley to Metro-North rail.","themes":["railroad","mountains"],"tags":["rail-trail","paved"],"routeGroups":["ne-extension"]},{"id":"albany-hudson","type":"trail","name":"Albany-Hudson Electric Trail","state":"NY","region":"new-york","miles":36,"surface":["paved"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":1,"scenery":4,"history":3,"cycling":4,"uniqueness":3,"priority":"B","notes":"Former electric railway corridor connecting Albany and Hudson through the Hudson River Valley.","themes":["railroad","river-corridor"],"tags":["rail-trail","paved"],"routeGroups":["ne-extension"]},{"id":"p-niagara-falls","type":"poi","name":"Niagara Falls","state":"NY","region":"new-york","category":"Natural Wonder","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"3160 tons of water flows over every second. The scale is incomprehensible until you stand there.","themes":["waterway","industrial"],"tags":["waterfall","bucket-list","iconic"],"mustDo":["Maid of the Mist boat tour","Cave of the Winds","Canadian side for the full panorama"],"routeGroups":[]},{"id":"p-walkway-hudson","type":"poi","name":"Walkway Over the Hudson","state":"NY","region":"new-york","category":"Engineering Landmark","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"The worlds longest elevated pedestrian bridge. Spectacular Hudson River views.","themes":["industrial","river-corridor"],"tags":["bridge","engineering","landmark"],"mustDo":["Sunset crossing","Hudson Valley Rail Trail connection"],"routeGroups":[]},{"id":"p-hudson-valley","type":"poi","name":"Hudson River Valley","state":"NY","region":"new-york","category":"Historic Region","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"River estates, Revolutionary War history, and dramatic scenery connecting Albany toward New York City.","themes":["revolutionary-war","river-corridor"],"tags":["historic","scenic"],"mustDo":["Walkway Over the Hudson","West Point overlook","Hudson riverfront towns"],"routeGroups":[]},{"id":"p-nyc","type":"poi","name":"New York City","state":"NY","region":"new-york","category":"Major Atlantic Terminus","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"Potential eastern endpoint. Battery Park at the Atlantic. Brooklyn Bridge, Central Park, Statue of Liberty.","themes":["industrial","revolutionary-war","colonial-history","coastal"],"tags":["city","terminus","bucket-list"],"mustDo":["Battery Park","Brooklyn Bridge","Central Park","Statue of Liberty views"],"routeGroups":[]},{"id":"p-saratoga","type":"poi","name":"Saratoga Battlefield","state":"NY","region":"new-york","category":"Historic Site","scenery":4,"history":5,"uniqueness":5,"priority":"B","notes":"Turning point of the Revolutionary War. Freeman Farm and Bemis Heights preserved battlefield.","themes":["revolutionary-war"],"tags":["battlefield","historic"],"mustDo":["Freeman Farm walking trail","Neilson House","British Redoubt Trail"],"routeGroups":[]},{"id":"farmington-canal","type":"trail","name":"Farmington Canal Heritage Trail","state":"CT/MA","region":"new-england","miles":81,"surface":["paved"],"trailType":"Rail Trail / Canal Towpath","ekg":"up2","status":"Established","difficulty":1,"scenery":4,"history":4,"cycling":5,"uniqueness":4,"priority":"A","notes":"New Haven north toward Northampton. Built atop the historic Farmington Canal and later railroad corridor.","themes":["waterway","railroad","colonial-history"],"tags":["canal-towpath","rail-trail","paved"],"routeGroups":["ne-extension"]},{"id":"air-line-ct","type":"trail","name":"Air Line State Park Trail","state":"CT","region":"new-england","miles":50,"surface":["gravel","dirt"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":4,"history":3,"cycling":4,"uniqueness":4,"priority":"B","notes":"Former air line railroad through scenic Connecticut. Tall viaducts and wooded ridge scenery.","themes":["railroad","mountains"],"tags":["rail-trail","viaduct"],"routeGroups":["ne-extension"]},{"id":"p-yale","type":"poi","name":"Yale University","state":"CT","region":"new-england","category":"Historic Campus","scenery":4,"history":5,"uniqueness":4,"priority":"B","notes":"One of Americas oldest universities. Southern terminus area of the Farmington Canal corridor.","themes":["colonial-history","revolutionary-war"],"tags":["university","historic"],"mustDo":["Old Campus","Beinecke Rare Book Library","Yale Art Gallery"],"routeGroups":[]},{"id":"p-mystic","type":"poi","name":"Mystic Seaport","state":"CT","region":"new-england","category":"Maritime Museum","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Americas leading maritime museum. 19th-century seaport village preserved on the Mystic River.","themes":["colonial-history","coastal","industrial"],"tags":["maritime","museum","historic"],"mustDo":["Charles W. Morgan whaling ship","Planetarium show","Village restoration"],"routeGroups":[]},{"id":"east-bay-bike","type":"trail","name":"East Bay Bike Path","state":"RI","region":"new-england","miles":15,"surface":["paved"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":1,"scenery":5,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Providence to Bristol along Narragansett Bay. Ocean views, colonial towns, beautiful urban trail.","themes":["coastal","colonial-history","waterway"],"tags":["rail-trail","paved","coastal"],"routeGroups":["ne-extension"]},{"id":"blackstone-river","type":"trail","name":"Blackstone River Bikeway","state":"RI/MA","region":"new-england","miles":48,"surface":["paved","crushed-stone"],"trailType":"Rail Trail / Greenway","ekg":"flat","status":"Established","difficulty":1,"scenery":4,"history":5,"cycling":4,"uniqueness":4,"priority":"A","notes":"Birthplace of the Industrial Revolution. Providence to Worcester along the historic Blackstone River Canal.","themes":["industrial","waterway","railroad"],"tags":["rail-trail","canal","industrial-heritage"],"routeGroups":["ne-extension"]},{"id":"p-newport","type":"poi","name":"Newport RI","state":"RI","region":"new-england","category":"Historic Coastal City","scenery":5,"history":5,"uniqueness":5,"priority":"A","notes":"Americas Gilded Age capital. Ocean cliffs, sailing heritage, and the spectacular Cliff Walk.","themes":["coastal","colonial-history"],"tags":["gilded-age","sailing","mansion"],"mustDo":["Cliff Walk","The Breakers Mansion","Ocean Drive"],"routeGroups":[]},{"id":"minuteman","type":"trail","name":"Minuteman Bikeway","state":"MA","region":"new-england","miles":11,"surface":["paved"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":1,"scenery":4,"history":5,"cycling":4,"uniqueness":4,"priority":"A","notes":"Cambridge to Bedford through Lexington. Follows the route of the British march on April 19 1775.","themes":["railroad","revolutionary-war"],"tags":["rail-trail","paved","revolutionary-war"],"routeGroups":["ne-extension"]},{"id":"bruce-freeman","type":"trail","name":"Bruce Freeman Rail Trail","state":"MA","region":"new-england","miles":25,"surface":["paved"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":1,"scenery":3,"history":2,"cycling":4,"uniqueness":2,"priority":"B","notes":"Growing rail trail through suburban Massachusetts towns north of Boston.","themes":["railroad"],"tags":["rail-trail","paved"],"routeGroups":["ne-extension"]},{"id":"mass-central","type":"trail","name":"Mass Central Rail Trail","state":"MA","region":"new-england","miles":104,"surface":["mixed"],"trailType":"Rail Trail","ekg":"up1","status":"Partial","difficulty":2,"scenery":4,"history":2,"cycling":4,"uniqueness":4,"priority":"B","notes":"Cross-state Massachusetts corridor linking central Mass communities and connecting with other New England trails.","themes":["railroad","small-town-america"],"tags":["rail-trail"],"routeGroups":["ne-extension"]},{"id":"cape-cod-rail","type":"trail","name":"Cape Cod Rail Trail","state":"MA","region":"new-england","miles":27,"surface":["paved"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":1,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"A","notes":"Classic Cape Cod ride through forests, cranberry bogs, and coastal villages.","themes":["coastal","railroad"],"tags":["rail-trail","paved","coastal"],"routeGroups":["ne-extension"]},{"id":"shining-sea","type":"trail","name":"Shining Sea Bikeway","state":"MA","region":"new-england","miles":11,"surface":["paved"],"trailType":"Rail Trail","ekg":"down1","status":"Established","difficulty":1,"scenery":5,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Woods Hole to North Falmouth with stunning views across Vineyard Sound to the Islands.","themes":["coastal"],"tags":["rail-trail","paved","coastal"],"routeGroups":["ne-extension"]},{"id":"p-boston","type":"poi","name":"Boston MA","state":"MA","region":"new-england","category":"Major City Stop","scenery":4,"history":5,"uniqueness":5,"priority":"A","notes":"Historic heart of New England. Freedom Trail, USS Constitution, Boston Harbor. Atlantic terminus option.","themes":["revolutionary-war","colonial-history","coastal","industrial"],"tags":["city","terminus","freedom-trail"],"mustDo":["Freedom Trail","USS Constitution","Boston Harbor","Fenway Park"],"routeGroups":[]},{"id":"p-lexington-concord","type":"poi","name":"Lexington and Concord","state":"MA","region":"new-england","category":"Historic Site","scenery":3,"history":5,"uniqueness":5,"priority":"A","notes":"The shot heard round the world \u2014 birthplace of the American Revolution on April 19 1775.","themes":["revolutionary-war"],"tags":["battlefield","historic","bucket-list"],"mustDo":["Old North Bridge","Battle Road Trail","Concord town center"],"routeGroups":[]},{"id":"p-provincetown","type":"poi","name":"Provincetown MA","state":"MA","region":"new-england","category":"Coastal Town","scenery":5,"history":4,"uniqueness":5,"priority":"B","notes":"Cape tip. Where the Pilgrims first landed before Plymouth. Artist colony and spectacular sea views.","themes":["coastal","colonial-history"],"tags":["coastal","artist-colony"],"mustDo":["Race Point Beach","Pilgrim Monument","Art galleries"],"routeGroups":[]},{"id":"northern-rail-nh","type":"trail","name":"Northern Rail Trail","state":"NH","region":"new-england","miles":58,"surface":["crushed-stone"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":2,"scenery":4,"history":2,"cycling":4,"uniqueness":3,"priority":"B","notes":"One of New Englands longest uninterrupted rail trails. Lakes, forests, classic rural New Hampshire.","themes":["railroad","small-town-america"],"tags":["rail-trail"],"routeGroups":["ne-extension"]},{"id":"island-line-vt","type":"trail","name":"Island Line Trail","state":"VT","region":"new-england","miles":14,"surface":["paved"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":1,"scenery":5,"history":2,"cycling":4,"uniqueness":4,"priority":"B","notes":"Burlington to the Champlain Islands across a causeway on Lake Champlain. Stunning lake views.","themes":["waterway","coastal"],"tags":["rail-trail","paved","causeway"],"routeGroups":["ne-extension"]},{"id":"lamoille-valley-vt","type":"trail","name":"Lamoille Valley Rail Trail","state":"VT","region":"new-england","miles":93,"surface":["crushed-stone","gravel"],"trailType":"Rail Trail","ekg":"up1","status":"Established","difficulty":2,"scenery":5,"history":2,"cycling":4,"uniqueness":4,"priority":"A","notes":"St. Johnsbury to Swanton through northern Vermont mountains. 93 miles across the Green Mountains.","themes":["railroad","mountains","small-town-america"],"tags":["rail-trail","mountains"],"routeGroups":["ne-extension"]},{"id":"p-mount-washington","type":"poi","name":"Mount Washington Region","state":"NH","region":"new-england","category":"Mountain Destination","scenery":5,"history":3,"uniqueness":5,"priority":"A","notes":"Highest peak in the Northeast. Cog Railway, Auto Road, Presidential Range. Major northern spike option.","themes":["mountains"],"tags":["summit","scenic-drive","bucket-list"],"mustDo":["Mount Washington Auto Road","Cog Railway","Presidential Range views"],"routeGroups":[]},{"id":"p-franconia","type":"poi","name":"Franconia Notch","state":"NH","region":"new-england","category":"State Park","scenery":5,"history":3,"uniqueness":4,"priority":"A","notes":"White Mountains dramatic notch. Flume Gorge, Echo Lake, and spectacular ridge hiking.","themes":["mountains","national-park"],"tags":["state-park","gorge","scenic"],"mustDo":["Flume Gorge","Profile Lake","Franconia Ridge Loop"],"routeGroups":[]},{"id":"eastern-trail-me","type":"trail","name":"Eastern Trail","state":"ME","region":"new-england","miles":65,"surface":["paved","crushed-stone"],"trailType":"Rail Trail","ekg":"up2","status":"Established","difficulty":2,"scenery":4,"history":3,"cycling":4,"uniqueness":4,"priority":"A","notes":"Southern Maine rail-trail through marshes, forests, and coastal communities. East Coast Greenway key segment.","themes":["coastal","railroad"],"tags":["rail-trail","coastal","east-coast-greenway"],"routeGroups":["ne-extension"]},{"id":"down-east-sunrise","type":"trail","name":"Down East Sunrise Trail","state":"ME","region":"new-england","miles":87,"surface":["gravel"],"trailType":"Rail Trail","ekg":"flat","status":"Established","difficulty":3,"scenery":4,"history":2,"cycling":3,"uniqueness":5,"priority":"A","notes":"One of the most remote rail trails in the East. Calais to Ellsworth across the wild Maine coast.","themes":["coastal","railroad","small-town-america"],"tags":["rail-trail","remote"],"routeGroups":["ne-extension"]},{"id":"acadia-carriage","type":"trail","name":"Acadia Carriage Roads","state":"ME","region":"new-england","miles":45,"surface":["gravel"],"trailType":"Carriage Roads","ekg":"up1","status":"Established","difficulty":2,"scenery":5,"history":4,"cycling":5,"uniqueness":5,"priority":"A","notes":"John D. Rockefellers 45-mile network of broken-stone carriage roads through Acadia National Park.","themes":["national-park","mountains","coastal"],"tags":["carriage-roads","bucket-list","national-park"],"routeGroups":["ne-extension"]},{"id":"p-portland-me","type":"poi","name":"Portland ME","state":"ME","region":"new-england","category":"City Stop","scenery":4,"history":4,"uniqueness":4,"priority":"B","notes":"Maines most vibrant city. Old Port district, exceptional food scene, gateway to Acadia.","themes":["coastal","small-town-america"],"tags":["city","food","coastal"],"mustDo":["Old Port district","Eastern Promenade trail","Portland Observatory"],"routeGroups":[]},{"id":"p-portland-head-light","type":"poi","name":"Portland Head Light","state":"ME","region":"new-england","category":"Lighthouse","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"Perhaps the most photographed lighthouse in America. Fort Williams Park on Casco Bay.","themes":["coastal","colonial-history"],"tags":["lighthouse","iconic","photography"],"mustDo":["Fort Williams Park","Sunrise photography","Casco Bay views"],"routeGroups":[]},{"id":"p-acadia","type":"poi","name":"Acadia National Park","state":"ME","region":"new-england","category":"National Park","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"One of the greatest cycling destinations in America. Carriage Roads, ocean cliffs, Cadillac Mountain sunrise.","themes":["national-park","coastal","mountains"],"tags":["national-park","bucket-list","cycling-destination"],"mustDo":["Cadillac Mountain sunrise (first in US)","Carriage Roads loop","Jordan Pond","Park Loop Road"],"routeGroups":[]},{"id":"p-bar-harbor","type":"poi","name":"Bar Harbor ME","state":"ME","region":"new-england","category":"Coastal Town","scenery":4,"history":3,"uniqueness":4,"priority":"B","notes":"Gateway town to Acadia. Charming Victorian village on Frenchman Bay. Whale watching and kayaking.","themes":["coastal","small-town-america"],"tags":["coastal","food","gateway"],"mustDo":["Bar Island land bridge walk","Whale watching","Lobster dinner"],"routeGroups":[]},{"id":"p-lubec","type":"poi","name":"Lubec ME \u2014 Easternmost Point","state":"ME","region":"new-england","category":"Geographic Milestone","scenery":4,"history":3,"uniqueness":5,"priority":"A","notes":"The easternmost point in the contiguous United States. Quoddy Head State Park at the Atlantic edge.","themes":["coastal"],"tags":["milestone","lighthouse","terminus"],"mustDo":["Quoddy Head Light \u2014 easternmost lighthouse in US","West Quoddy Head trail","Campobello Island"],"routeGroups":[]},{"id":"p-mackinac","type":"poi","name":"Mackinac Island MI","state":"MI","region":"great-lakes","category":"Island Destination","scenery":5,"history":4,"uniqueness":5,"priority":"A","notes":"No cars allowed. Victorian resort island where cycling is the primary transportation. Utterly iconic.","themes":["small-town-america","coastal","railroad"],"tags":["island","no-cars","cycling-destination"],"mustDo":["Grand Hotel","Arch Rock","Fort Mackinac"],"routeGroups":[]}];
+const INITIAL_ROUTES  = {"heartbeat-classic":{"name":"Heartbeat Classic","description":"The original West to East crossing \u2014 Pacific to DC along the Great American Rail-Trail corridor. The route that started it all.","color":"#e63946","icon":"\u2665","ids":["odt","p-olympic-np","c-ow","willapa","c-wi","p-snoqualmie","ironhorse","p-ellensburg","centennial","columbia-plateau","c-spokane-cda","cda","p-lake-cda","c-cda-hiawatha","hiawatha","p-wallace","c-mt-corridor","olympian","p-missoula","c-billings-wy","p-little-bighorn","c-wy-approach","casper-trail","p-independence-rock","c-wy-ne","cowboy","p-sandhills","c-missouri-crossing","p-omaha","wabash-trace","raccoon-river","high-trestle","cedar-valley","p-mississippi","hennepin-canal","p-galena","illinois-prairie","p-chicago","c-chicago-indiana","calumet","p-indiana-dunes","cardinal-greenway","c-ohio-pa-entry","ohio-to-erie","p-cuyahoga-valley","ohio-erie-canal","p-cleveland","panhandle","montour","p-pittsburgh","gap","p-ohiopyle","p-continental-divide","p-cumberland","p-paw-paw","co-canal","p-harpers-ferry","p-antietam","p-great-falls","capital-crescent","p-washington-dc"]},"northern-tier":{"name":"Northern Tier","description":"Shift north through Wisconsin, the Great Lakes, Erie Canal, and New England \u2014 ultimately reaching Acadia.","color":"#4488ff","icon":"\u2191","ids":["odt","ironhorse","centennial","cda","hiawatha","olympian","casper-trail","cowboy","elroy-sparta","400-state","great-river-wi","ohio-to-erie","erie-canalway","p-niagara-falls","empire-state","p-saratoga","farmington-canal","east-bay-bike","eastern-trail-me","down-east-sunrise","acadia-carriage","p-acadia","p-lubec"]},"southern-deviation":{"name":"Southern Deviation \u2014 Katy Trail","description":"Deep southern dip through Missouri wine country on the longest developed rail trail in the US.","color":"#f4a261","icon":"\u2193","ids":["odt","ironhorse","cda","cowboy","katy-trail","p-gateway-arch","ohio-to-erie","gap","p-cumberland","co-canal","capital-crescent","p-washington-dc"]},"national-parks-edition":{"name":"National Parks Edition","description":"Maximize national park encounters from coast to coast \u2014 a park-to-park epic.","color":"#2a9d8f","icon":"\u2b21","ids":["p-olympic-np","ironhorse","p-glacier-np","p-yellowstone","mickelson","p-rushmore-badlands","cowboy","p-indiana-dunes","p-cuyahoga-valley","gap","p-harpers-ferry","co-canal","p-washington-dc","p-shenandoah","p-new-river-gorge","p-acadia"]},"ne-extension":{"name":"Northeast Extension","description":"From Washington DC through New York and New England to the Atlantic at Acadia or Lubec. Multiple terminus options.","color":"#9b5de5","icon":"\u2605","ids":["p-washington-dc","wod","empire-state","erie-canalway","p-saratoga","p-walkway-hudson","p-hudson-valley","harlem-valley","farmington-canal","p-yale","east-bay-bike","p-newport","minuteman","p-lexington-concord","p-boston","mass-central","cape-cod-rail","p-provincetown","northern-rail-nh","p-mount-washington","p-franconia","lamoille-valley-vt","island-line-vt","eastern-trail-me","p-portland-head-light","down-east-sunrise","acadia-carriage","p-acadia","p-bar-harbor","p-lubec"]},"canal-waterways":{"name":"Canal and Waterways Edition","description":"Follow the canals and towpaths that moved goods across America \u2014 the original transportation internet.","color":"#44aaff","icon":"~","ids":["hennepin-canal","ohio-erie-canal","co-canal","p-paw-paw","p-cumberland","dl-trail","erie-canalway","blackstone-river","farmington-canal","east-bay-bike"]},"railroad-heritage":{"name":"Railroad Heritage Edition","description":"The rail corridors that built America \u2014 from the Milwaukee Road over the Cascades to the B&O in the East.","color":"#f4c430","icon":"\u25b2","ids":["ironhorse","centennial","hiawatha","olympian","cowboy","elroy-sparta","gap","ghost-town","pine-creek","virginia-creeper","new-river-va","dl-trail","farmington-canal"]},"historic-america":{"name":"Historic America Edition","description":"The transportation story of America through its most significant historic landmarks \u2014 from Lewis and Clark to the Civil War.","color":"#c77dff","icon":"\u25a0","ids":["p-lewis-clark-caverns","p-gates-mountains","p-independence-rock","p-chimney-rock","p-scotts-bluff","p-little-bighorn","p-omaha","p-mississippi","p-galena","p-pittsburgh","co-canal","p-harpers-ferry","p-antietam","p-gettysburg","p-flight93","p-fallingwater","p-colonial-wburg","p-lexington-concord","p-boston","p-saratoga","p-mystic","p-newport","p-nyc"]}};
+
+// ── CONFIG ────────────────────────────────────────────────────────
+const TYPE_CFG = {
+  trail:      {color:'#e63946',bg:'#2e1012',icon:'\u2b21',label:'Trail'},
+  connection: {color:'#f4a261',bg:'#2e2010',icon:'\u27f6',label:'Connection'},
+  poi:        {color:'#2a9d8f',bg:'#0a2220',icon:'\u2605',label:'Must See'}
+};
+const EKG_CFG = {
+  up2:   {sym:'\u2191\u2191',label:'Major spike (N)',cls:'ekg-up2'},
+  up1:   {sym:'\u2191',label:'Moderate spike',cls:'ekg-up1'},
+  flat:  {sym:'\u2014',label:'Baseline',cls:'ekg-flat'},
+  down1: {sym:'\u2193',label:'Moderate dip',cls:'ekg-down1'},
+  down2: {sym:'\u2193\u2193',label:'Major dip (S)',cls:'ekg-down2'}
+};
+const SCORE_CFG = [
+  {key:'scenery',label:'SCENERY',color:'#44cc77'},
+  {key:'history',label:'HISTORY',color:'#f4c430'},
+  {key:'cycling',label:'CYCLING',color:'#44aaff',trailOnly:true},
+  {key:'uniqueness',label:'UNIQUE',color:'#c77dff'}
+];
+const REGION_LABELS = {
+  'pacific-nw':'Pacific NW','northern-rockies':'N Rockies',
+  'great-plains':'Great Plains','midwest':'Midwest',
+  'ohio-valley':'Ohio Valley','appalachia':'Appalachia',
+  'mid-atlantic':'Mid-Atlantic','new-york':'New York',
+  'new-england':'New England','great-lakes':'Great Lakes'
+};
+const STORAGE_KEY = 'u6160_v2_library';
+const ROUTES_STORAGE_KEY = 'u6160_v2_routes';
+let nextId = 5000;
+
+// ── STATE ─────────────────────────────────────────────────────────
+let lib = [];
+let routes = {};
+let activeTab = 'library';
+let expandedId = null;
+let expandedRouteId = null;
+let routeEditMode = null;
+let filters = {type:'all',region:'',priority:'',theme:'',search:''};
+let addOpen = false;
+let insertAfterId = null;
+
+// ── PERSISTENCE ───────────────────────────────────────────────────
+function loadData(){
+  try{
+    const s = localStorage.getItem(STORAGE_KEY);
+    lib = s ? JSON.parse(s) : JSON.parse(JSON.stringify(INITIAL_LIBRARY));
+  }catch(e){ lib = JSON.parse(JSON.stringify(INITIAL_LIBRARY)); }
+}
+function saveData(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(lib)); }catch(e){}
+}
+function loadRoutes(){
+  try{
+    const s = localStorage.getItem(ROUTES_STORAGE_KEY);
+    routes = s ? JSON.parse(s) : JSON.parse(JSON.stringify(INITIAL_ROUTES));
+  }catch(e){ routes = JSON.parse(JSON.stringify(INITIAL_ROUTES)); }
+}
+function saveRoutes(){
+  try{ localStorage.setItem(ROUTES_STORAGE_KEY, JSON.stringify(routes)); }catch(e){}
+}
+function slugify(s){
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || ('route-'+Date.now());
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function flashMsg(m){
+  const el=document.getElementById('save-msg');
+  el.textContent=m; setTimeout(()=>el.textContent='',2500);
+}
+
+// ── FILTER ────────────────────────────────────────────────────────
+function getFiltered(){
+  let items = lib;
+  if(filters.type!=='all') items=items.filter(i=>i.type===filters.type);
+  if(filters.region)   items=items.filter(i=>i.region===filters.region);
+  if(filters.priority) items=items.filter(i=>i.priority===filters.priority);
+  if(filters.theme)    items=items.filter(i=>(i.themes||[]).includes(filters.theme));
+  if(filters.search){
+    const q=filters.search.toLowerCase();
+    items=items.filter(i=>(i.name||'').toLowerCase().includes(q)||(i.state||'').toLowerCase().includes(q)||(i.notes||'').toLowerCase().includes(q)||(i.category||'').toLowerCase().includes(q)||((i.themes||[]).join(' ')).toLowerCase().includes(q));
+  }
+  return items;
+}
+
+// ── SCORE DOTS ───────────────────────────────────────────────────
+function scoreDots(n, color){
+  let h='';
+  for(let i=1;i<=5;i++) h+=`<span class="dot ${i<=n?'on':'off'}" style="background:${i<=n?color:'#c8b0a0'}"></span>`;
+  return h;
+}
+
+// ── RENDER ENTRY ─────────────────────────────────────────────────
+function renderEntry(item, idx, inRoute){
+  const cfg = TYPE_CFG[item.type]||TYPE_CFG.trail;
+  const ekg = item.ekg ? EKG_CFG[item.ekg] : null;
+  const isOpen = expandedId === item.id;
+  const priCls = item.priority==='A'?'pri-a':item.priority==='B'?'pri-b':'pri-c';
+  const regionLbl = REGION_LABELS[item.region]||item.region||'';
+
+  const seqNum = inRoute ? '' : `<span class="eseq">${String(idx+1).padStart(2,'0')}</span>`;
+  const stateBadge = `<span class="estate" style="color:${cfg.color};background:${cfg.color}18;border:1px solid ${cfg.color}30">${esc(item.state)}</span>`;
+  const priEl = item.priority ? `<span class="epri ${priCls}">${item.priority}</span>` : '';
+  const regionEl = regionLbl ? `<span class="eregion">${esc(regionLbl)}</span>` : '';
+  const ekgEl = ekg ? `<span class="ekg-sym ${ekg.cls}">${ekg.sym}</span>` : '';
+  const milesEl = item.miles ? `<span class="emiles" style="color:${cfg.color}">${item.miles}<span>mi</span></span>` : '';
+  const userEl = item.userAdded ? '<span class="user-badge">NEW</span>' : '';
+
+  let detail = '';
+  if(isOpen){
+    // meta
+    const meta = [
+      item.trailType ? `<span><span class="dk">TYPE </span><span class="dv">${esc(item.trailType)}</span></span>` : '',
+      item.surface&&item.surface.length ? `<span><span class="dk">SURFACE </span><span class="dv">${esc(item.surface.join(', '))}</span></span>` : '',
+      item.status    ? `<span><span class="dk">STATUS </span><span class="dv">${esc(item.status)}</span></span>` : '',
+      item.category  ? `<span><span class="dk">CATEGORY </span><span class="dv">${esc(item.category)}</span></span>` : '',
+      item.difficulty? `<span><span class="dk">DIFFICULTY </span><span class="dv">${'●'.repeat(item.difficulty)}${'○'.repeat(5-item.difficulty)}</span></span>` : '',
+      ekg ? `<span><span class="dk">EKG </span><span class="${ekg.cls}">${ekg.sym} ${ekg.label}</span></span>` : '',
+      item.routeGroups&&item.routeGroups.length ? `<span><span class="dk">ROUTES </span><span class="dv">${esc(item.routeGroups.join(', '))}</span></span>` : '',
+    ].filter(Boolean).join('');
+
+    // scores
+    const scores = SCORE_CFG
+      .filter(s=>!s.trailOnly||item.type==='trail')
+      .filter(s=>item[s.key]!==undefined)
+      .map(s=>`<div class="score-row"><span class="score-lbl">${s.label}</span>${scoreDots(item[s.key],s.color)}</div>`)
+      .join('');
+
+    // mustDo
+    const mustdo = (item.mustDo&&item.mustDo.length)
+      ? `<div class="mustdo-title">MUST DO / SEE</div>`
+        + item.mustDo.map(d=>`<div class="mustdo-item"><span class="mustdo-dot">&#9670;</span><span class="mustdo-text">${esc(d)}</span></div>`).join('')
+      : '';
+
+    // tags + themes
+    const allTags = [...(item.themes||[]),...(item.tags||[])];
+    const tagsHtml = allTags.length ? `<div class="tags-section">${allTags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+
+    detail = `<div class="edetail" style="background:${cfg.bg};border-left:3px solid ${cfg.color}">
+      <div class="detail-meta">${meta}</div>
+      ${scores ? `<div class="scores-section">${scores}</div>` : ''}
+      ${item.notes?`<p class="detail-notes">${esc(item.notes)}</p>`:''}
+      ${mustdo}
+      ${tagsHtml}
+      <div class="dactions">
+        <button class="btn-ins" onclick="event.stopPropagation();doInsertAfter('${item.id}')">Insert After</button>
+        <button class="btn-rem" onclick="event.stopPropagation();doRemove('${item.id}')">Remove</button>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="entry type-${item.type}" id="entry-${item.id}">
+    <div class="erow${isOpen?' open':''}" style="border-left:3px solid ${cfg.color};background:${isOpen?cfg.bg:'transparent'}" onclick="toggleExpand('${item.id}')">
+      ${seqNum}
+      <span class="eicon" style="color:${cfg.color}">${cfg.icon}</span>
+      ${stateBadge}
+      <span class="ename">${esc(item.name)}</span>
+      ${regionEl}
+      ${priEl}
+      ${ekgEl}
+      ${milesEl}
+      ${userEl}
+    </div>
+    ${detail}
+  </div>`;
+}
+
+// ── RENDER ROUTE CARD ─────────────────────────────────────────────
+function renderRouteCard(routeId, routeDef){
+  const isOpen = expandedRouteId === routeId;
+  const col = routeDef.color || '#e63946';
+  const ids = routeDef.ids||[];
+  const resolved = ids.map(id=>({id,item:lib.find(e=>e.id===id)}));
+  const found = resolved.filter(x=>x.item);
+  const trails = found.filter(x=>x.item.type==='trail');
+  const totalMiles = found.filter(x=>x.item.miles).reduce((s,x)=>s+(x.item.miles||0),0);
+
+  let seq = '';
+  if(isOpen){
+    const missingCount = resolved.length - found.length;
+    const seqRows = found.length ? found.map((x,idx)=>{
+      const cfg = TYPE_CFG[x.item.type]||TYPE_CFG.trail;
+      return `<div class="rcseq-item">
+        <span class="rcseq-icon" style="color:${cfg.color}">${cfg.icon}</span>
+        <span class="rcseq-state" style="color:${cfg.color}">${esc(x.item.state)}</span>
+        <span class="rcseq-name">${esc(x.item.name)}</span>
+        ${x.item.miles?`<span class="rcseq-miles">${x.item.miles}mi</span>`:''}
+        <span class="rcbtns">
+          <button class="rcbtn" onclick="moveRouteEntry('${routeId}','${x.id}',-1)" ${idx===0?'disabled':''}>&#9650;</button>
+          <button class="rcbtn" onclick="moveRouteEntry('${routeId}','${x.id}',1)" ${idx===found.length-1?'disabled':''}>&#9660;</button>
+          <button class="rcbtn" onclick="removeRouteEntry('${routeId}','${x.id}')" style="color:#ff7070;border-color:#5a4040">&#10005;</button>
+        </span>
+      </div>`;
+    }).join('') : '<div class="rcseq-missing">No entries yet — add some from the library below.</div>';
+
+    const availableOptions = lib
+      .filter(e=>!ids.includes(e.id))
+      .slice().sort((a,b)=>a.name.localeCompare(b.name))
+      .map(e=>`<option value="${e.id}">${esc(e.name)} (${esc(e.state)})</option>`)
+      .join('');
+
+    seq = `<div class="rcseq">
+      <div class="rcseq-actions">
+        <button class="rc-edit-btn" onclick="openEditRoute('${routeId}')">Edit Info</button>
+        <button class="rc-del-btn" onclick="deleteRoute('${routeId}')">Delete Route</button>
+      </div>
+      ${seqRows}
+      ${missingCount?`<div class="rcseq-missing">+ ${missingCount} unresolved reference(s) — entry may have been removed from the library</div>`:''}
+      <div class="rcadd-row">
+        <select class="rcadd-sel" id="rcadd-${routeId}">${availableOptions}</select>
+        <button class="rcadd-btn" onclick="addRouteEntry('${routeId}')">+ Add to Route</button>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="rcard">
+    <div class="rchead${isOpen?' open':''}" style="border-left:4px solid ${col}" onclick="toggleExpandRoute('${routeId}')">
+      <span class="rcicon" style="color:${col}">${esc(routeDef.icon||'●')}</span>
+      <div class="rcinfo">
+        <div class="rcname">${esc(routeDef.name)}</div>
+        <div class="rcdesc">${esc(routeDef.description||'')}</div>
+      </div>
+      <div class="rcstats">${trails.length} trails<br>${totalMiles.toLocaleString()} mi</div>
+    </div>
+    ${seq}
+  </div>`;
+}
+
+// ── RENDER MAIN ───────────────────────────────────────────────────
+function render(){
+  saveData();
+  saveRoutes();
+  // stats
+  const trails = lib.filter(r=>r.type==='trail');
+  const conns  = lib.filter(r=>r.type==='connection');
+  const pois   = lib.filter(r=>r.type==='poi');
+  const miles  = lib.filter(r=>r.miles).reduce((s,r)=>s+(r.miles||0),0);
+  document.getElementById('st-t').textContent = trails.length;
+  document.getElementById('st-c').textContent = conns.length;
+  document.getElementById('st-p').textContent = pois.length;
+  document.getElementById('st-m').textContent = miles.toLocaleString();
+  document.getElementById('st-n').textContent = lib.length;
+  document.getElementById('st-n2').textContent = lib.length;
+
+  // insert dropdown
+  const ins = document.getElementById('a-insert');
+  const prev = ins.value;
+  ins.innerHTML = '<option value="">&#x2014; Append to end &#x2014;</option>'
+    + lib.map((r,i)=>`<option value="${r.id}">${String(i+1).padStart(2,'0')} · ${esc(r.name)} (${esc(r.state)})</option>`).join('');
+  if(prev) ins.value=prev;
+
+  // tab states
+  document.getElementById('tab-lib').className = 'tab' + (activeTab==='library'?' active':'');
+  document.getElementById('tab-rts').className = 'tab' + (activeTab==='routes'?' active-routes':'');
+
+  // filter bar visibility
+  document.getElementById('filter-bar').style.display = activeTab==='library'?'flex':'none';
+
+  // toolbar button visibility
+  document.getElementById('btn-add-entry').style.display = activeTab==='library'?'':'none';
+  document.getElementById('btn-new-route').style.display = activeTab==='routes'?'':'none';
+
+  const content = document.getElementById('content');
+
+  if(activeTab==='library'){
+    const items = getFiltered();
+    if(!items.length){
+      content.innerHTML='<div class="no-results">No entries match your filter.</div>';
+      return;
+    }
+    content.innerHTML = items.map((item,i)=>renderEntry(item,i,false)).join('');
+  } else {
+    // routes tab
+    const routeIds = Object.keys(routes);
+    if(!routeIds.length){
+      content.innerHTML = '<div class="no-results">No routes yet. Click "+ New Route" above to build your first one.</div>';
+      return;
+    }
+    content.innerHTML = `<div class="routes-grid">${routeIds.map(id=>renderRouteCard(id,routes[id])).join('')}</div>`;
+  }
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────────
+function setTab(t){
+  activeTab=t; expandedId=null; expandedRouteId=null; render();
+}
+function toggleExpand(id){
+  expandedId = expandedId===id?null:id;
+  render();
+}
+function toggleExpandRoute(id){
+  expandedRouteId = expandedRouteId===id?null:id;
+  render();
+}
+function setFType(v){
+  filters.type=v;
+  document.querySelectorAll('.flt').forEach(b=>{
+    const f=b.dataset.f;
+    b.className='flt'+(f===v?' act-'+v:'');
+  });
+  render();
+}
+function setSearch(q){ filters.search=q; expandedId=null; render(); }
+function setFRegion(v){ filters.region=v; render(); }
+function setFPriority(v){ filters.priority=v; render(); }
+function setFTheme(v){ filters.theme=v; render(); }
+
+function doInsertAfter(id){
+  insertAfterId=id;
+  const name=lib.find(r=>r.id===id)?.name||id;
+  document.getElementById('add-after-label').textContent=`(after: ${name})`;
+  document.getElementById('a-insert').value=id;
+  addOpen=true;
+  document.getElementById('add-panel').classList.add('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function doRemove(id){
+  if(!confirm('Remove this entry from the library?')) return;
+  lib=lib.filter(r=>r.id!==id);
+  if(expandedId===id) expandedId=null;
+  render();
+}
+
+// ── ROUTE EDITOR ──────────────────────────────────────────────────
+function openNewRoute(){
+  routeEditMode = null;
+  document.getElementById('route-panel-title').textContent = 'NEW ROUTE';
+  document.getElementById('route-submit-btn').textContent = 'Create Route';
+  document.getElementById('r-name').value = '';
+  document.getElementById('r-desc').value = '';
+  document.getElementById('r-icon').value = '\u2605';
+  document.getElementById('r-color').value = '#e63946';
+  document.getElementById('route-panel').classList.add('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openEditRoute(routeId){
+  routeEditMode = routeId;
+  const r = routes[routeId];
+  document.getElementById('route-panel-title').textContent = 'EDIT ROUTE INFO';
+  document.getElementById('route-submit-btn').textContent = 'Save Changes';
+  document.getElementById('r-name').value = r.name||'';
+  document.getElementById('r-desc').value = r.description||'';
+  document.getElementById('r-icon').value = r.icon||'\u2605';
+  document.getElementById('r-color').value = r.color||'#e63946';
+  document.getElementById('route-panel').classList.add('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeRoutePanel(){
+  routeEditMode = null;
+  document.getElementById('route-panel').classList.remove('open');
+}
+function submitRoute(){
+  const name = document.getElementById('r-name').value.trim();
+  if(!name){ alert('Route name is required.'); return; }
+  const desc  = document.getElementById('r-desc').value.trim();
+  const icon  = document.getElementById('r-icon').value.trim() || '\u2605';
+  const color = document.getElementById('r-color').value || '#e63946';
+
+  if(routeEditMode){
+    routes[routeEditMode].name = name;
+    routes[routeEditMode].description = desc;
+    routes[routeEditMode].icon = icon;
+    routes[routeEditMode].color = color;
+    closeRoutePanel(); render();
+    flashMsg('\u2713 Route updated');
+  } else {
+    let id = slugify(name), suffix = 1;
+    while(routes[id]){ id = slugify(name)+'-'+(++suffix); }
+    routes[id] = {name, description:desc, icon, color, ids:[]};
+    expandedRouteId = id;
+    closeRoutePanel(); render();
+    flashMsg('\u2713 Route created — start adding entries below');
+  }
+}
+function deleteRoute(routeId){
+  const name = routes[routeId]?.name || routeId;
+  if(!confirm('Delete the route "'+name+'"? This only removes the route definition — library entries are untouched.')) return;
+  delete routes[routeId];
+  if(expandedRouteId===routeId) expandedRouteId=null;
+  render();
+  flashMsg('\u2713 Route deleted');
+}
+function addRouteEntry(routeId){
+  const sel = document.getElementById('rcadd-'+routeId);
+  const id = sel.value;
+  if(!id) return;
+  if(!routes[routeId].ids.includes(id)) routes[routeId].ids.push(id);
+  render();
+}
+function removeRouteEntry(routeId, entryId){
+  routes[routeId].ids = routes[routeId].ids.filter(x=>x!==entryId);
+  render();
+}
+function moveRouteEntry(routeId, entryId, dir){
+  const ids = routes[routeId].ids;
+  const idx = ids.indexOf(entryId);
+  const newIdx = idx + dir;
+  if(newIdx<0 || newIdx>=ids.length) return;
+  [ids[idx], ids[newIdx]] = [ids[newIdx], ids[idx]];
+  render();
+}
+
+// ── ADD FORM ──────────────────────────────────────────────────────
+function toggleAdd(){
+  addOpen=!addOpen;
+  insertAfterId=null;
+  document.getElementById('add-after-label').textContent='';
+  document.getElementById('add-panel').classList.toggle('open',addOpen);
+}
+function closeAdd(){
+  addOpen=false; insertAfterId=null;
+  document.getElementById('add-panel').classList.remove('open');
+  clearAddForm();
+}
+function toggleAddFields(){
+  const t=document.getElementById('a-type').value;
+  document.getElementById('a-miles-wrap').style.display    = t==='poi'?'none':'';
+  document.getElementById('a-surface-wrap').style.display  = t==='poi'?'none':'';
+  document.getElementById('a-ekg-wrap').style.display      = t==='trail'?'':'none';
+  document.getElementById('a-category-wrap').style.display = t==='poi'?'':'none';
+  document.getElementById('a-mustdo-wrap').style.display   = t==='poi'?'':'none';
+}
+function clearAddForm(){
+  ['a-name','a-state','a-miles','a-surface','a-notes','a-mustdo','a-category'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('a-type').value='trail';
+  document.getElementById('a-ekg').value='flat';
+  document.getElementById('a-priority').value='B';
+  document.getElementById('a-insert').value='';
+  toggleAddFields();
+}
+function submitAdd(){
+  const name=document.getElementById('a-name').value.trim();
+  if(!name){alert('Name is required.');return;}
+  const type=document.getElementById('a-type').value;
+  const miles=document.getElementById('a-miles').value;
+  const mustDoRaw=document.getElementById('a-mustdo').value;
+  const newItem={
+    id:'user-'+(++nextId), type, name,
+    state:document.getElementById('a-state').value.trim()||'—',
+    region:document.getElementById('a-region').value||'',
+    notes:document.getElementById('a-notes').value.trim()||'',
+    priority:document.getElementById('a-priority').value||'B',
+    themes:[],tags:[],routeGroups:[],
+    userAdded:true
+  };
+  if(type!=='poi'){
+    if(miles) newItem.miles=Number(miles);
+    const surf=document.getElementById('a-surface').value.trim();
+    if(surf) newItem.surface=[surf];
+  }
+  if(type==='trail') newItem.ekg=document.getElementById('a-ekg').value;
+  if(type==='poi'){
+    const cat=document.getElementById('a-category').value.trim();
+    if(cat) newItem.category=cat;
+    if(mustDoRaw) newItem.mustDo=mustDoRaw.split(';').map(s=>s.trim()).filter(Boolean);
+  }
+  const afterId=document.getElementById('a-insert').value;
+  if(afterId){
+    const idx=lib.findIndex(r=>r.id===afterId);
+    lib.splice(idx+1,0,newItem);
+  } else {
+    lib.push(newItem);
+  }
+  closeAdd(); render();
+  flashMsg('\u2713 Added: '+name);
+}
+
+// ── EXPORT / IMPORT / RESET ───────────────────────────────────────
+function exportJSON(){
+  const bundle = {library:lib, routes:routes};
+  const blob=new Blob([JSON.stringify(bundle,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='heartbeat-database.json'; a.click();
+  flashMsg('\u2713 Exported!');
+}
+function importJSON(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(Array.isArray(data)){
+        lib=data; render(); flashMsg('\u2713 Imported library (legacy format)!');
+      } else if(data && Array.isArray(data.library)){
+        lib = data.library;
+        if(data.routes) routes = data.routes;
+        render(); flashMsg('\u2713 Imported!');
+      } else {
+        alert('Invalid format — expected a JSON array or a {library, routes} object.');
+      }
+    }catch{alert('Could not parse JSON file.');}
+  };
+  reader.readAsText(file); e.target.value='';
+}
+function resetData(){
+  if(!confirm('Reset to original data? All your additions and route edits will be lost.')) return;
+  lib = JSON.parse(JSON.stringify(INITIAL_LIBRARY));
+  routes = JSON.parse(JSON.stringify(INITIAL_ROUTES));
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(ROUTES_STORAGE_KEY);
+  render(); flashMsg('\u2713 Reset done');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────
+loadData();
+loadRoutes();
+toggleAddFields();
+render();
+</script></body></html>
